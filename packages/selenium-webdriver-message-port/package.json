@@ -3,6 +3,9 @@
   "version": "0.0.0-0",
   "description": "MessagePort for passing bidirectional messages between WebDriver host and browser",
   "homepage": "https://github.com/teamonting/selenium-webdriver-message-port#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "bugs": {
     "url": "https://github.com/teamonting/selenium-webdriver-message-port/issues"
   },
