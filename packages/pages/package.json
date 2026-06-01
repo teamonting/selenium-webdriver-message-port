@@ -38,9 +38,16 @@
     "@onting/selenium-webdriver-message-port": "0.0.0-0"
   },
   "devDependencies": {
-    "@onting/selenium-webdriver-message-port": "0.0.0-0"
+    "@onting/selenium-webdriver-message-port": "^0.0.0-0",
+    "@tsconfig/strictest": "^2.0.8",
+    "@types/react": "^18.3.29",
+    "@types/react-dom": "^18.3.7",
+    "esbuild": "^0.27.7",
+    "typescript": "^6.0.3"
   },
-  "dependencies": {},
   "exports": {},
-  "peerDependencies": {}
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
 }

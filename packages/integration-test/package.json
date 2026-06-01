@@ -29,7 +29,12 @@
     "@onting/test-harness": "0.0.0-0"
   },
   "devDependencies": {
-    "@onting/selenium-webdriver-message-port": "0.0.0-0"
+    "@happy-dom/global-registrator": "^20.9.0",
+    "@onting/selenium-webdriver-message-port": "^0.0.0-0",
+    "@tsconfig/strictest": "^2.0.8",
+    "expect": "^30.4.1",
+    "resolve-cwd": "^3.0.0",
+    "typescript": "^6.0.3"
   },
   "files": [
     "**/*.cjs",
@@ -37,7 +42,8 @@
     "**/*.mjs",
     "webDriver/**/*"
   ],
-  "dependencies": {},
   "exports": {},
-  "peerDependencies": {}
+  "dependencies": {
+    "@onting/test-harness": "^0.0.0-0"
+  }
 }

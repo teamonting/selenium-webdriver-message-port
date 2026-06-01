@@ -25,10 +25,19 @@
   ],
   "author": "William Wong (https://github.com/compulim)",
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@typescript-eslint/parser": "^8.60.0",
+    "eslint": "^9.39.4",
+    "eslint-import-resolver-node": "^0.4.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.8.3"
+  },
   "exports": {},
   "localPeerDependencies": {},
-  "pinDependencies": {},
-  "peerDependencies": {}
+  "pinDependencies": {}
 }

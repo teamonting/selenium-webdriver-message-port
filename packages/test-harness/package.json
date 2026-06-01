@@ -33,6 +33,15 @@
     "switch": "cat package.json | jq --arg SWITCH_NAME $SWITCH_NAME -r '(.[\"switch:\" + $SWITCH_NAME] // {}) as $TEMPLATE | .devDependencies += ($TEMPLATE.devDependencies // {}) | .dependencies += ($TEMPLATE.dependencies // {})' | tee ./package.json.tmp && mv ./package.json.tmp ./package.json"
   },
   "peerDependencies": {
-    "typescript": ">=5"
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@tsconfig/strictest": "^2.0.8",
+    "resolve-cwd": "^3.0.0"
+  },
+  "dependencies": {
+    "@happy-dom/global-registrator": "^20.9.0",
+    "escape-string-regexp": "^4.0.0",
+    "expect": "^30.4.1"
   }
 }
