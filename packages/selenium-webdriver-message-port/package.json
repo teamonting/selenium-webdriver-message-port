@@ -1,7 +1,7 @@
 {
   "name": "@onting/selenium-webdriver-message-port",
   "version": "0.0.0-0",
-  "description": "",
+  "description": "MessagePort for passing bidirectional messages between WebDriver host and browser",
   "homepage": "https://github.com/teamonting/selenium-webdriver-message-port#readme",
   "bugs": {
     "url": "https://github.com/teamonting/selenium-webdriver-message-port/issues"
@@ -28,6 +28,7 @@
   "typings": "./dist/selenium-webdriver-message-port.d.ts",
   "files": [
     "./*.js",
+    "./CHANGELOG.md",
     "./dist/"
   ],
   "scripts": {
