@@ -16,6 +16,7 @@ In the HTML page:
 <script src="https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port@0.0.0-0/dist/browser.js" type="module"></script>
 <script>
   window.navigator.webdriverMessagePort.addEventListener('message', ({ data }) => {
+    // Will print "Hello from host!"
     console.log(data);
   });
 
@@ -34,6 +35,7 @@ import { setup } from '@onting/selenium-webdriver-message-port/host';
 const { messagePort, poll } = setup(webDriver);
 
 messagePort.addEventListener('message', ({ data }) => {
+  // Will print "Hello from browser!"
   console.log(data);
 });
 
@@ -64,7 +66,7 @@ At the end of the test, call `messagePort.close()` to shut down. If you have tra
 
 ### Why am I not receiving messages on host side?
 
-Call `poll()` when your code is idle. The `poll()` call will retrieve all pending messages from the browser and send it to the port on the host side.
+Call `poll()` when your host code is idle. The `poll()` call will retrieve all pending messages from the browser and send it to the port on the host side.
 
 ### Why am I not receiving the first few messages?
 
