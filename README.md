@@ -54,7 +54,7 @@ We currently support transferring `MessagePort` only.
 
 ### Why my tests are lingering?
 
-At the end of the test, call `messagePort.close()` to shutdown. If you have transferred additional `MessagePort`, also call `close()` on them.
+At the end of the test, call `messagePort.close()` to shut down. If you have transferred additional `MessagePort`, also call `close()` on them.
 
 ### Why I am not receiving first few messages?
 
