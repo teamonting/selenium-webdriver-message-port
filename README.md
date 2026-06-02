@@ -93,7 +93,7 @@ At the end of the test, call `messagePort.close()` to shut down. If you have tra
 
 Call `poll()` when your host code is idle. The `poll()` call will retrieve all pending messages from the browser via `executeScript()` and send it to the port on the host side.
 
-Similar to `executeScript()`, special considerations must be made while calling `poll()`. You should not call `poll()` while other WebDriver commands are being processed. This is because WebDriver is single-threaded, all commands are processed serially.
+Similar to `executeScript()`, special considerations must be made while calling `poll()`. WebDriver is single-threaded, all commands are processed serially. You should not call `poll()` while other WebDriver commands are being processed.
 
 ### Why am I not receiving the first few messages?
 
