@@ -21,7 +21,11 @@ function marshal(target: any, transferable: readonly Transferable[]): any {
     if (value instanceof MessagePort) {
       const index = transferable.indexOf(value);
 
-      return ~index ? [MESSAGE_PORT, index] : value;
+      if (index === -1) {
+        throw new Error('Cannot marshal MessagePort: it must be included in the transfer list');
+      }
+
+      return [MESSAGE_PORT, index] as const;
     }
 
     return value;
