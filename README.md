@@ -54,11 +54,11 @@ await poll();
 
 [`message-port-rpc`](https://npmjs.com/package/message-port-rpc) leverage `MessagePort` and turn any functions into remoting functions (RPC). Client calling the RPC function will have the arguments passed to the server via `MessagePort`. And the server returning the RPC function will have the return value pass to the client.
 
-### What transferable are supported?
+### What transferables are supported?
 
 We currently support transferring `MessagePort` only.
 
-### Why my tests are lingering?
+### Why are my tests lingering?
 
 At the end of the test, call `messagePort.close()` to shut down. If you have transferred additional `MessagePort`, also call `close()` on them.
 
