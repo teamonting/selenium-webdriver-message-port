@@ -4,7 +4,7 @@
 
 ## Background
 
-`MessagePort` is the JavaScript standard communication channel. We are bringing `MessagePort` to [`selenium-webdriver`](https://npmjs.com/package/selenium-webdriver-message-port) by leveraging `executeScript` calls.
+`MessagePort` is the JavaScript standard communication channel. We are bringing `MessagePort` to [`selenium-webdriver`](https://npmjs.com/package/selenium-webdriver) by leveraging `executeScript` calls.
 
 This enables libraries that use `MessagePort` to function across the host and the browser, such as [`message-port-rpc`](https://npmjs.com/package/message-port-rpc).
 
