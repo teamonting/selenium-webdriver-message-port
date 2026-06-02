@@ -14,7 +14,7 @@ In the HTML page:
 
 ```html
 <script>
-  import { messagePort } from 'https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port@latest/dist/browser.js';
+  import { messagePort } from 'https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port/dist/browser.js';
 
   messagePort.addEventListener('message', ({ data }) => {
     // Will print "Hello from host!"
