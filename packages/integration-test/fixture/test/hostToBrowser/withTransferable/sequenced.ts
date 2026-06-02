@@ -13,7 +13,7 @@ scenario(
     bdd
       .given(
         'browser loading withTransferable/sequenced.html',
-        async () => ({ webDriver: await buildAndNavigate('hostToBrowser/withTransferable/sequenced.html') }),
+        async () => ({ webDriver: await buildAndNavigate('hostToBrowser/withTransferable/sequenced.html') })
         // ({ webDriver }) => webDriver.quit()
       )
       .and(
