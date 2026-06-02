@@ -38,7 +38,7 @@ messagePort.addEventListener('message', ({ data }) => {
 });
 
 // start() will uncork events sent from the browser side.
-messagePort.addEventListener.start();
+messagePort.start();
 
 messagePort.postMessage('Hello from host!');
 
