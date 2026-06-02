@@ -4,9 +4,69 @@
 
 ## Background
 
+`MessagePort` is the JavaScript standard communication channel. We are bringing `MessagePort` to [`selenium-webdriver`](https://npmjs.com/package/selenium-webdriver-message-port) by leveraging `executeScript` calls.
+
+This enables libraries that use `MessagePort` to function across the host and the browser, such as [`message-port-rpc`](https://npmjs.com/package/message-port-rpc).
+
 ## How to use
 
+In the HTML page:
+
+```html
+<script src="https://cdn.jsdelivr.net/@onting/selenium-webdriver-message-port/dist/browser.js" type="module"></script>
+<script>
+  window.navigator.webdriverMessagePort.addEventListener('message', ({ data }) => {
+    console.log(data);
+  });
+
+  // start() will uncork events sent from the host side.
+  window.navigator.webdriverMessagePort.start();
+
+  window.navigator.webdriverMessagePort.postMessage('Hello from browser!');
+</script>
+```
+
+In the host:
+
+```ts
+import { setup } from '@onting/selenium-webdriver-message-port/host';
+
+const { messagePort, poll } = setup(webDriver);
+
+messagePort.addEventListener('message', ({ data }) => {
+  console.log(data);
+});
+
+// start() will uncork events sent from the browser side.
+messagePort.addEventListener.start();
+
+messagePort.postMessage('Hello from host!');
+
+// poll() will receive pending messages posted from the browser.
+await poll();
+```
+
 ## Behaviors
+
+### What transferable are supported?
+
+We currently support transferring `MessagePort` only.
+
+### Why my tests are lingering?
+
+At the end of the test, call `messagePort.close()` to shutdown. If you have transferred additional `MessagePort`, also call `close()` on them.
+
+### Why I am not receiving first few messages?
+
+Call `MessagePort.start()` only after all `MessagePort.addEventListener()` are registered. The `start()` will uncork the `MessagePort` and messages will flow through.
+
+If event listeners are not register before `start()`, messages sent before the registration will be lost.
+
+### Why `undefined` values are not being sent?
+
+`executeScript()` modifies the value being passed, similar to how `JSON.parse` and `JSON.stringify` works.
+
+Consider using `JSON.stringify` or a structured clone algorithm to preserve values that are not safe across serialization context.
 
 ## Contributions
 
