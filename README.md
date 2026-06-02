@@ -13,7 +13,7 @@ This enables libraries that use `MessagePort` to function across the host and th
 In the HTML page:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port@0.0.0-0/dist/browser.js" type="module"></script>
+<script src="https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port@latest/dist/browser.js" type="module"></script>
 <script>
   window.navigator.webdriverMessagePort.addEventListener('message', ({ data }) => {
     // Will print "Hello from host!"
