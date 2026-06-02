@@ -56,11 +56,11 @@ We currently support transferring `MessagePort` only.
 
 At the end of the test, call `messagePort.close()` to shut down. If you have transferred additional `MessagePort`, also call `close()` on them.
 
-### Why I am not receiving first few messages?
+### Why am I not receiving the first few messages?
 
 Call `MessagePort.start()` only after all `MessagePort.addEventListener()` are registered. The `start()` will uncork the `MessagePort` and messages will flow through.
 
-If event listeners are not register before `start()`, messages sent before the registration will be lost.
+If event listeners are not registered before `start()`, messages sent before the registration will be lost.
 
 ### Why `undefined` values are not being sent?
 
