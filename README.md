@@ -79,7 +79,7 @@ If event listeners are not registered before `start()`, messages sent before the
 
 `executeScript()` modifies the value being passed, similar to how `JSON.parse` and `JSON.stringify` works.
 
-Consider using `JSON.stringify` or a structured clone algorithm to preserve values that are not safe across serialization context.
+Consider using `JSON.stringify` or [structured clone algorithm](https://www.npmjs.com/search?q=structured%20clone%20algorithm) to preserve values that are not safe to pass across the WebDriver serialization context.
 
 ## Contributions
 
