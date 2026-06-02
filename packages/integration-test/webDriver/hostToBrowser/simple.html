@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script type="module">
+      import { messagePort } from '/static/js/browser.js';
+
+      messagePort.addEventListener('message', ({ data }) => console.log(data), { once: true });
+
+      messagePort.start();
+    </script>
+  </body>
+</html>

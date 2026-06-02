@@ -5,6 +5,7 @@
   "description": "",
   "license": "MIT",
   "author": "",
+  "type": "module",
   "scripts": {
     "build": "npm run build:copy && npm run build:custom --if-present",
     "build:copy": "mkdir -p ./webDriver/static/; SRC=$(node --eval=\"console.log(require('path').resolve(require('resolve-cwd')('@onting/selenium-webdriver-message-port'), '../../dist'))\"); DEST=$(realpath ./webDriver/static); rm -rf $DEST; mkdir -p $DEST/js/; cp $SRC/** $DEST/js/",
@@ -12,6 +13,7 @@
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // {}) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | has($K) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // {}) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | has($K) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "docker": "docker compose up --quiet-pull --scale chromium=4",
+    "docker:solo": "docker compose --file ./docker-compose-solo.yml up --quiet-pull",
     "init": "npm run init:dev --if-present && npm run init:prod --if-present",
     "init:dev": "npm install --save-dev @happy-dom/global-registrator @tsconfig/strictest expect resolve-cwd typescript",
     "init:prod": "npm install --save @onting/test-harness@0.0.0-0 @onting/selenium-webdriver-message-port@0.0.0-0",
@@ -31,9 +33,14 @@
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.9.0",
     "@onting/selenium-webdriver-message-port": "^0.0.0-0",
+    "@testduet/given-when-then": "^0.1.0",
+    "@testduet/wait-for": "^0.1.1",
     "@tsconfig/strictest": "^2.0.8",
+    "@types/node": "^25.9.1",
     "expect": "^30.4.1",
+    "message-port-rpc": "^2.0.1",
     "resolve-cwd": "^3.0.0",
+    "selenium-webdriver": "^4.44.0",
     "typescript": "^6.0.3"
   },
   "files": [

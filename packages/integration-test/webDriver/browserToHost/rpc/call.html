@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script type="module">
+      import { messagePortRPC } from 'https://esm.sh/message-port-rpc';
+      import { messagePort } from '/static/js/browser.js';
+
+      messagePortRPC(messagePort, () => 'Hello, World!');
+    </script>
+  </body>
+</html>

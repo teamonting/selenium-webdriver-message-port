@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script type="module">
+      import { messagePort } from '/static/js/browser.js';
+
+      messagePort.postMessage('Hello, World!');
+    </script>
+  </body>
+</html>

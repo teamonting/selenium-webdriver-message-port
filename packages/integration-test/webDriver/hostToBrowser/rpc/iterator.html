@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script type="module">
+      import { forGenerator } from 'https://esm.sh/message-port-rpc';
+      import { messagePort } from '/static/js/browser.js';
+
+      const values = await Array.fromAsync(forGenerator(messagePort)());
+
+      console.log(JSON.stringify(values));
+    </script>
+  </body>
+</html>
