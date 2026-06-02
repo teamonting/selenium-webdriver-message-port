@@ -58,9 +58,7 @@ await poll();
 [`message-port-rpc`](https://npmjs.com/package/message-port-rpc) leverage `MessagePort` and turn any functions into remoting functions (RPC). Client calling the RPC function will have the arguments passed to the server via `MessagePort`. And the server returning the RPC function will have the return value pass to the client.
 
 <details>
-<summary>Click to expand sample code</summary>
-
-In the webpage:
+<summary>Click to see the sample code</summary>
 
 ```html
 <script>
@@ -70,8 +68,6 @@ In the webpage:
   messagePortRPC(messagePort, message => console.log(message));
 </script>
 ```
-
-In the host:
 
 ```ts
 import { setup } from '@onting/selenium-webdriver-message-port/host';
