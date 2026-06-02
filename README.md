@@ -10,7 +10,7 @@ This enables libraries that use `MessagePort` to function across the host and th
 
 ## How to use
 
-In the HTML page:
+In the webpage:
 
 ```html
 <script>
@@ -56,6 +56,34 @@ await poll();
 `MessagePort` is an asynchronous bidirectional communication channel between two discrete JavaScript VMs.
 
 [`message-port-rpc`](https://npmjs.com/package/message-port-rpc) leverage `MessagePort` and turn any functions into remoting functions (RPC). Client calling the RPC function will have the arguments passed to the server via `MessagePort`. And the server returning the RPC function will have the return value pass to the client.
+
+<details>
+<summary>Click to expand sample code</summary>
+
+In the webpage:
+
+```html
+<script>
+  import { messagePort } from 'https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port/dist/browser.js';
+  import { messagePortRPC } from 'https://esm.sh/message-port-rpc';
+
+  messagePortRPC(messagePort, message => console.log(message));
+</script>
+```
+
+In the host:
+
+```ts
+import { setup } from '@onting/selenium-webdriver-message-port/host';
+import { messagePortRPC } from 'https://esm.sh/message-port-rpc';
+
+const { messagePort, poll } = setup(webDriver);
+
+const log = messagePortRPC(messagePort);
+
+await log('Hello from host!');
+```
+</details>
 
 ### What transferables are supported?
 
