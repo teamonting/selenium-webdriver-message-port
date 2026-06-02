@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script src="/static/js/selenium-webdriver-message-port.browser.js" type="module"></script>
+    <script type="module">
+      import { forGenerator } from 'https://esm.sh/message-port-rpc';
+
+      forGenerator(navigator.webdriverMessagePort, function* () {
+        yield 1;
+        yield 2;
+        yield 3;
+      });
+    </script>
+  </body>
+</html>

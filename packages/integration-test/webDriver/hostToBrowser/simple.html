@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script src="/static/js/selenium-webdriver-message-port.browser.js" type="module"></script>
+    <script type="module">
+      navigator.webdriverMessagePort.addEventListener('message', ({ data }) => console.log(data), { once: true });
+      navigator.webdriverMessagePort.start();
+    </script>
+  </body>
+</html>

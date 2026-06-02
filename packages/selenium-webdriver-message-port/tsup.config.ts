@@ -4,7 +4,9 @@ import overrideConfig from './tsup.config.override.ts';
 const baseConfig: Options = {
   dts: true,
   entry: {
-    'selenium-webdriver-message-port': './src/index.ts'
+    'selenium-webdriver-message-port': './src/index.ts',
+    'selenium-webdriver-message-port.browser': './src/browser/index.ts',
+    'selenium-webdriver-message-port.host': './src/host/index.ts'
   },
   sourcemap: true
 };
@@ -13,11 +15,7 @@ export default defineConfig([
   overrideConfig({
     ...baseConfig,
     format: ['esm'],
+    noExternal: ['uuid', 'workthru'],
     target: 'esnext'
-  }),
-  overrideConfig({
-    ...baseConfig,
-    format: ['cjs'],
-    target: 'es2019' // For compatibility with Webpack 4.
   })
 ]);

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script src="/static/js/selenium-webdriver-message-port.browser.js" type="module"></script>
+    <script type="module">
+      const { port1, port2 } = new MessageChannel();
+
+      port1.addEventListener('message', ({ data }) => console.log(data), { once: true });
+      port1.start();
+
+      navigator.webdriverMessagePort.postMessage('Hello, World!', [port2]);
+    </script>
+  </body>
+</html>

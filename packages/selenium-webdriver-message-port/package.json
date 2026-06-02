@@ -15,20 +15,21 @@
   },
   "license": "MIT",
   "author": "",
+  "type": "module",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/selenium-webdriver-message-port.d.mts",
-        "default": "./dist/selenium-webdriver-message-port.mjs"
-      },
-      "require": {
-        "types": "./dist/selenium-webdriver-message-port.d.ts",
-        "default": "./dist/selenium-webdriver-message-port.js"
-      }
+      "types": "./dist/selenium-webdriver-message-port.d.ts",
+      "default": "./dist/selenium-webdriver-message-port.js"
+    },
+    "./browser": {
+      "types": "./dist/selenium-webdriver-message-port.browser.d.ts",
+      "default": "./dist/selenium-webdriver-message-port.browser.js"
+    },
+    "./host": {
+      "types": "./dist/selenium-webdriver-message-port.host.d.ts",
+      "default": "./dist/selenium-webdriver-message-port.host.js"
     }
   },
-  "main": "./dist/selenium-webdriver-message-port.js",
-  "typings": "./dist/selenium-webdriver-message-port.d.ts",
   "files": [
     "./*.js",
     "./CHANGELOG.md",
@@ -59,6 +60,7 @@
     "@tsconfig/recommended": "^1.0.13",
     "@tsconfig/strictest": "^2.0.8",
     "@types/node": "^25.9.1",
+    "@types/selenium-webdriver": "^4.35.6",
     "escape-string-regexp": "^4.0.0",
     "expect": "^30.4.1",
     "publint": "^0.3.21",
@@ -67,5 +69,9 @@
   },
   "localPeerDependencies": {
     "@onting/test-harness": "0.0.0-0"
+  },
+  "dependencies": {
+    "uuid": "^14.0.0",
+    "workthru": "^0.1.0"
   }
 }
