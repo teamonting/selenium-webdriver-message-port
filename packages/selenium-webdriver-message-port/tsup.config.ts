@@ -4,9 +4,9 @@ import overrideConfig from './tsup.config.override.ts';
 const baseConfig: Options = {
   dts: true,
   entry: {
-    'selenium-webdriver-message-port': './src/index.ts',
-    'selenium-webdriver-message-port.browser': './src/browser/index.ts',
-    'selenium-webdriver-message-port.host': './src/host/index.ts'
+    browser: './src/browser/index.ts',
+    host: './src/host/index.ts',
+    index: './src/index.ts'
   },
   sourcemap: true
 };

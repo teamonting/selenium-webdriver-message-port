@@ -8,12 +8,12 @@ import buildAndNavigate from '../../../shared/buildAndNavigate.ts';
 import flushBrowserLogs from '../../../shared/flushBrowserLogs.ts';
 
 scenario(
-  'hostToBrowser/withTransferable/outOfOrder',
+  'hostToBrowser/withTransferable/sequenced',
   bdd => {
     bdd
       .given(
-        'browser loading withTransferable/outOfOrder.html',
-        async () => ({ webDriver: await buildAndNavigate('hostToBrowser/withTransferable/outOfOrder.html') }),
+        'browser loading withTransferable/sequenced.html',
+        async () => ({ webDriver: await buildAndNavigate('hostToBrowser/withTransferable/sequenced.html') }),
         ({ webDriver }) => webDriver.quit()
       )
       .and(
