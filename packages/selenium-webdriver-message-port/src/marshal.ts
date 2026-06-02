@@ -49,7 +49,13 @@ function marshal(target: any, transferable: readonly Transferable[]): any {
 function unmarshal(target: any, transferable: readonly Transferable[]): any {
   return workthru(target, value => {
     if (Array.isArray(value) && value[0] === MESSAGE_PORT) {
-      return transferable[value[1]];
+      const index = value[1];
+
+      if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index >= transferable.length) {
+        throw new Error(`Cannot unmarshal MessagePort: invalid transfer index ${String(index)}`);
+      }
+
+      return transferable[index];
     }
 
     return value;
