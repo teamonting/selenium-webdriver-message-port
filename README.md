@@ -4,7 +4,7 @@
 
 ## Background
 
-`MessagePort` is the JavaScript standard communication channel. We are bringing `MessagePort` to [`selenium-webdriver`](https://npmjs.com/package/selenium-webdriver) by leveraging `executeScript` calls.
+[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort) is the JavaScript standard communication channel. We are bringing `MessagePort` to [`selenium-webdriver`](https://npmjs.com/package/selenium-webdriver) by leveraging `executeScript` calls.
 
 This enables libraries that use `MessagePort` to function across the host and the browser, such as [`message-port-rpc`](https://npmjs.com/package/message-port-rpc).
 
@@ -48,6 +48,12 @@ await poll();
 
 ## Behaviors
 
+### What can I do with `MessagePort`?
+
+`MessagePort` is an asynchronous bidirectional communication channel between two discrete JavaScript VMs.
+
+[`message-port-rpc`](https://npmjs.com/package/message-port-rpc) leverage `MessagePort` and turn any functions into remoting functions (RPC). Client calling the RPC function will have the arguments passed to the server via `MessagePort`. And the server returning the RPC function will have the return value pass to the client.
+
 ### What transferable are supported?
 
 We currently support transferring `MessagePort` only.
@@ -55,6 +61,10 @@ We currently support transferring `MessagePort` only.
 ### Why my tests are lingering?
 
 At the end of the test, call `messagePort.close()` to shut down. If you have transferred additional `MessagePort`, also call `close()` on them.
+
+### Why am I not receiving messages on host side?
+
+Call `poll()` when your code is idle. The `poll()` call will retrieve all pending messages from the browser and send it to the port on the host side.
 
 ### Why am I not receiving the first few messages?
 
