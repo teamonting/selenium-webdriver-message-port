@@ -81,9 +81,9 @@ If event listeners are not registered before `start()`, messages sent before the
 
 Consider using `JSON.stringify` or [structured clone algorithm](https://www.npmjs.com/search?q=structured%20clone%20algorithm) to preserve values that are not safe to pass across the WebDriver serialization context.
 
-### Do you support WebDriver BiDi Protocol?
+### Do you support [WebDriver BiDi Protocol](https://w3c.github.io/webdriver-bidi/)?
 
-We do not support the new BiDi protocol yet but this is on our road map. Using BiDi could simplify some userland code.
+We do not support the new [WebDriver BiDi Protocol](https://w3c.github.io/webdriver-bidi/) yet but this is on our road map. Using BiDi could simplify some userland code.
 
 ## Contributions
 
