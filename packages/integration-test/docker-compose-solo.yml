@@ -1,0 +1,25 @@
+services:
+  chromium:
+    environment:
+      SE_ENABLE_TRACING: false
+      SE_EVENT_BUS_HOST: hub
+      SE_EVENT_BUS_PUBLISH_PORT: 4442
+      SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+      SE_NODE_SESSION_TIMEOUT: 15
+    image: selenium/standalone-chromium:148.0
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    shm_size: 2gb
+    stop_grace_period: 0s
+    volumes:
+      - /dev/shm:/dev/shm
+
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    stop_grace_period: 0s
+    volumes:
+      - ./webDriver:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro

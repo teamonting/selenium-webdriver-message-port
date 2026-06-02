@@ -14,7 +14,7 @@ scenario(
       .given(
         'browser loading withTransferable/sequenced.html',
         async () => ({ webDriver: await buildAndNavigate('hostToBrowser/withTransferable/sequenced.html') }),
-        ({ webDriver }) => webDriver.quit()
+        // ({ webDriver }) => webDriver.quit()
       )
       .and(
         'its associated MessagePort',
