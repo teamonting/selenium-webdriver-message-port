@@ -83,7 +83,7 @@ Consider using `JSON.stringify` or [structured clone algorithm](https://www.npmj
 
 ### Do you support WebDriver BiDi Protocol?
 
-We do not support the new BiDi protocol yet but this is on our road map. Using BiDi could potentially simplify some userland code.
+We do not support the new BiDi protocol yet but this is on our road map. Using BiDi could simplify some userland code.
 
 ## Contributions
 
