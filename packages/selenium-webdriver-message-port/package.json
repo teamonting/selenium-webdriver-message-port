@@ -16,11 +16,9 @@
   "license": "MIT",
   "author": "",
   "type": "module",
+  "main": "./dist/selenium-webdriver-message-port.js",
+  "typings": "./dist/selenium-webdriver-message-port.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/selenium-webdriver-message-port.d.ts",
-      "default": "./dist/selenium-webdriver-message-port.js"
-    },
     "./browser": {
       "types": "./dist/selenium-webdriver-message-port.browser.d.ts",
       "default": "./dist/selenium-webdriver-message-port.browser.js"
