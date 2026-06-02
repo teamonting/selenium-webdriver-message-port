@@ -13,27 +13,24 @@ This enables libraries that use `MessagePort` to function across the host and th
 In the HTML page:
 
 ```html
-<script
-  src="https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port@latest/dist/browser.js"
-  type="module">
-</script>
-
 <script>
-  window.navigator.webdriverMessagePort.addEventListener('message', ({ data }) => {
+  import { messagePort } from 'https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port@latest/dist/browser.js';
+
+  messagePort.addEventListener('message', ({ data }) => {
     // Will print "Hello from host!"
     console.log(data);
   });
 
   // start() will uncork events sent from the host side.
-  window.navigator.webdriverMessagePort.start();
+  messagePort.start();
 
-  window.navigator.webdriverMessagePort.postMessage('Hello from browser!');
+  messagePort.postMessage('Hello from browser!');
 </script>
 ```
 
 In the host:
 
-```ts
+```js
 import { setup } from '@onting/selenium-webdriver-message-port/host';
 
 const { messagePort, poll } = setup(webDriver);

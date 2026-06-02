@@ -74,14 +74,11 @@ function sendToBrowser(message: SerializedMessage): void {
   port.postMessage(unmarshal(data, transfer), transfer);
 }
 
-globalThis.__messagePortFacility = Object.freeze({
+globalThis.__seleniumWebDriverMessagePortFacility = Object.freeze({
   flushAll,
   sendToBrowser
 } satisfies MessagePortFacility);
 
-Object.defineProperty(window.navigator, 'webdriverMessagePort', {
-  configurable: false,
-  enumerable: true,
-  writable: false,
-  value: createMessagePort(ROOT_MESSAGE_PORT)
-});
+const messagePort = createMessagePort(ROOT_MESSAGE_PORT);
+
+export { messagePort };

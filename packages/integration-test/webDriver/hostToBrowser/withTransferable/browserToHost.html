@@ -2,9 +2,10 @@
 <html lang="en">
   <head></head>
   <body>
-    <script src="/static/js/browser.js" type="module"></script>
     <script type="module">
-      navigator.webdriverMessagePort.addEventListener(
+      import { messagePort } from '/static/js/browser.js';
+
+      messagePort.addEventListener(
         'message',
         ({ data, ports }) => {
           console.log(data);
@@ -13,7 +14,8 @@
         },
         { once: true }
       );
-      navigator.webdriverMessagePort.start();
+
+      messagePort.start();
     </script>
   </body>
 </html>

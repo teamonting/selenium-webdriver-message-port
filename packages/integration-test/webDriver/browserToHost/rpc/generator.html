@@ -2,11 +2,11 @@
 <html lang="en">
   <head></head>
   <body>
-    <script src="/static/js/browser.js" type="module"></script>
     <script type="module">
       import { forGenerator } from 'https://esm.sh/message-port-rpc';
+      import { messagePort } from '/static/js/browser.js';
 
-      forGenerator(navigator.webdriverMessagePort, function* (value) {
+      forGenerator(messagePort, function* (value) {
         const result = yield 10;
 
         return result * 100;

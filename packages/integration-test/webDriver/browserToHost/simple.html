@@ -2,9 +2,10 @@
 <html lang="en">
   <head></head>
   <body>
-    <script src="/static/js/browser.js" type="module"></script>
     <script type="module">
-      navigator.webdriverMessagePort.postMessage('Hello, World!');
+      import { messagePort } from '/static/js/browser.js';
+
+      messagePort.postMessage('Hello, World!');
     </script>
   </body>
 </html>

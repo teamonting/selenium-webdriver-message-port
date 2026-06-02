@@ -2,11 +2,12 @@
 <html lang="en">
   <head></head>
   <body>
-    <script src="/static/js/browser.js" type="module"></script>
     <script type="module">
+      import { messagePort } from '/static/js/browser.js';
+
       const { port1, port2 } = new MessageChannel();
 
-      navigator.webdriverMessagePort.postMessage('Hello, World!', [port2]);
+      messagePort.postMessage('Hello, World!', [port2]);
       port1.postMessage('Aloha!');
     </script>
   </body>

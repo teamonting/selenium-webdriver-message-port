@@ -42,11 +42,11 @@ function setup(webDriver: WebDriver): {
       void executeScriptSequencer(async () => {
         await webDriver.executeScript<void>(
           (message: SerializedMessage) => {
-            if (!globalThis.__messagePortFacility) {
+            if (!globalThis.__seleniumWebDriverMessagePortFacility) {
               throw new Error('The page does not have harness installed, cannot send message');
             }
 
-            globalThis.__messagePortFacility.sendToBrowser(message);
+            globalThis.__seleniumWebDriverMessagePortFacility.sendToBrowser(message);
           },
           {
             data: marshal(data, ports),
@@ -71,11 +71,11 @@ function setup(webDriver: WebDriver): {
 
   const poll = async () => {
     const entries = await webDriver.executeScript<SerializedMessage[]>(() => {
-      if (!globalThis.__messagePortFacility) {
+      if (!globalThis.__seleniumWebDriverMessagePortFacility) {
         throw new Error('The page does not have harness installed');
       }
 
-      return globalThis.__messagePortFacility.flushAll();
+      return globalThis.__seleniumWebDriverMessagePortFacility.flushAll();
     });
 
     for (const { data, portId, transferPortIds } of entries) {

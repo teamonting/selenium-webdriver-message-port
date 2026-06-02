@@ -2,11 +2,11 @@
 <html lang="en">
   <head></head>
   <body>
-    <script src="/static/js/browser.js" type="module"></script>
     <script type="module">
       import { messagePortRPC } from 'https://esm.sh/message-port-rpc';
+      import { messagePort } from '/static/js/browser.js';
 
-      messagePortRPC(navigator.webdriverMessagePort, () => 'Hello, World!');
+      messagePortRPC(messagePort, () => 'Hello, World!');
     </script>
   </body>
 </html>
