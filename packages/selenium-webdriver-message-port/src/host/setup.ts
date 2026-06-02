@@ -39,7 +39,7 @@ function setup(webDriver: WebDriver): {
     portMap.set(portId, port);
 
     port.addEventListener('message', ({ data, ports }) => {
-      executeScriptSequencer(async () => {
+      void executeScriptSequencer(async () => {
         await webDriver.executeScript<void>(
           (message: SerializedMessage) => {
             if (!globalThis.__messagePortFacility) {
@@ -63,7 +63,7 @@ function setup(webDriver: WebDriver): {
             })
           } satisfies SerializedMessage
         );
-      });
+      }).catch(error => console.error(error));
     });
 
     port.start();
