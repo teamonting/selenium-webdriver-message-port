@@ -1,6 +1,6 @@
 /// <reference types="@onting/selenium-webdriver-message-port-types/selenium-webdriver.js" />
 
-import { Browser, BrowsingContext, Builder, logging } from 'selenium-webdriver';
+import { Browser, Builder, logging } from 'selenium-webdriver';
 import getScriptManagerInstance from 'selenium-webdriver/bidi/scriptManager.js';
 import { Options } from 'selenium-webdriver/chrome.js';
 
