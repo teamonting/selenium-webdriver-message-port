@@ -10,7 +10,7 @@ This enables libraries that use `MessagePort` to function across the host and th
 
 ## How to use
 
-In the webpage:
+In the HTML page:
 
 ```html
 <script>
@@ -31,7 +31,7 @@ In the webpage:
 In the host:
 
 <details>
-<summary>Click to see code to get <code>ScriptManager</code> and <code>RealmInfo</code></summary>
+<summary>Expand to see code to get <code>ScriptManager</code> and <code>RealmInfo</code></summary>
 
 ```ts
 import { Browser, Builder } from 'selenium-webdriver';
@@ -81,10 +81,10 @@ function viaExecuteScript(webDriver: WebDriver): {
 
 `MessagePort` is an asynchronous bidirectional communication channel between two discrete JavaScript VMs.
 
-[`message-port-rpc`](https://npmjs.com/package/message-port-rpc) leverage `MessagePort` and turn any functions into remoting functions (RPC). Client calling the RPC function will have the arguments passed to the server via `MessagePort`. And the server returning the RPC function will have the return value pass to the client.
+[`message-port-rpc`](https://npmjs.com/package/message-port-rpc) leverage `MessagePort` and turn any function into remoting function (RPC). Client calling the RPC function will have the arguments transferred to the server via `MessagePort`. And the server returning the RPC function will have the return value transferred back to the client.
 
 <details>
-<summary>Click to see the sample code</summary>
+<summary>Expand to see the sample code</summary>
 
 ```html
 <script>
@@ -121,7 +121,7 @@ You can use `viaExecuteScript()` instead. However there are some limitations:
 
 - Call `poll()` from time to time to fetch messages from browser to the host
    - Similar to `executeScript()`, special considerations must be made while calling `poll()`. WebDriver is single-threaded, all commands are processed serially. You should not call `poll()` while other WebDriver commands are being processed.
-- `executeScript()` is only supported in the window realm and is not supported in worker realms
+- `executeScript()` is only supported in the window realm and not in worker realms
 
 ```js
 import { viaExecuteScript } from '@onting/selenium-webdriver-message-port/host';
