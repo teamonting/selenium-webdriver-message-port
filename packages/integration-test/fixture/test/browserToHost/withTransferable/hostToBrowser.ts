@@ -1,4 +1,4 @@
-import { setup } from '@onting/selenium-webdriver-message-port/host';
+import { bidi, setup } from '@onting/selenium-webdriver-message-port/host';
 import { scenario } from '@testduet/given-when-then';
 import { waitFor } from '@testduet/wait-for';
 import { expect } from 'expect';
@@ -13,14 +13,25 @@ scenario(
     bdd
       .given(
         'browser loading withTransferable/hostToBrowser.html',
-        async () => ({ webDriver: await buildAndNavigate('browserToHost/withTransferable/hostToBrowser.html') }),
-        ({ webDriver }) => webDriver.quit()
+        async () => buildAndNavigate('browserToHost/withTransferable/hostToBrowser.html'),
+        ({ teardown }) => teardown()
       )
-      .and(
-        'its associated MessagePort',
-        precondition => ({ ...precondition, ...setup(precondition.webDriver) }),
-        ({ messagePort }) => messagePort.close()
-      )
+      .and.oneOf([
+        [
+          'MessagePort via executeScript',
+          precondition => ({ ...precondition, ...setup(precondition.webDriver) }),
+          ({ messagePort }) => messagePort.close()
+        ],
+        [
+          'MessagePort via BiDi',
+          async precondition => ({
+            ...precondition,
+            ...(await bidi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
+            poll: () => Promise.resolve()
+          }),
+          ({ messagePort }) => messagePort.close()
+        ]
+      ])
       .when(
         'listening to "message" event once',
         precondition => {

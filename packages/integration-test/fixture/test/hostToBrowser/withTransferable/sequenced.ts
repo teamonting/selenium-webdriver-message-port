@@ -1,4 +1,4 @@
-import { setup } from '@onting/selenium-webdriver-message-port/host';
+import { bidi, setup } from '@onting/selenium-webdriver-message-port/host';
 import { scenario } from '@testduet/given-when-then';
 import { waitFor } from '@testduet/wait-for';
 import { expect } from 'expect';
@@ -13,21 +13,32 @@ scenario(
     bdd
       .given(
         'browser loading withTransferable/sequenced.html',
-        async () => ({ webDriver: await buildAndNavigate('hostToBrowser/withTransferable/sequenced.html') }),
-        ({ webDriver }) => webDriver.quit()
+        async () => buildAndNavigate('hostToBrowser/withTransferable/sequenced.html'),
+        ({ teardown }) => teardown()
       )
-      .and(
-        'its associated MessagePort',
-        precondition => ({ ...precondition, ...setup(precondition.webDriver) }),
-        ({ messagePort }) => messagePort.close()
-      )
+      .and.oneOf([
+        [
+          'MessagePort via executeScript',
+          precondition => ({ ...precondition, ...setup(precondition.webDriver) }),
+          ({ messagePort }) => messagePort.close()
+        ],
+        [
+          'MessagePort via BiDi',
+          async precondition => ({
+            ...precondition,
+            ...(await bidi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
+            poll: () => Promise.resolve()
+          }),
+          ({ messagePort }) => messagePort.close()
+        ]
+      ])
       .and('modified WebDriver.executeScript() that throws if called simultaneously', precondition => {
         const { webDriver } = precondition;
 
         const originalExecuteScript = webDriver.executeScript.bind(webDriver);
         let isExecuteScriptBusy = false;
 
-        webDriver.executeScript = async <T>(...args: Parameters<typeof originalExecuteScript>): Promise<T> => {
+        webDriver.executeScript = async <T>(...args: Parameters<typeof originalExecuteScript<T>>): Promise<T> => {
           if (isExecuteScriptBusy) {
             throw new Error('WebDriver.executeScript() should not be called simultaneously');
           }
@@ -36,7 +47,7 @@ scenario(
           let result: T;
 
           try {
-            result = await originalExecuteScript(...args);
+            result = await originalExecuteScript<T>(...args);
           } finally {
             isExecuteScriptBusy = false;
           }

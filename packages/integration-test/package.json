@@ -33,6 +33,7 @@
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.9.0",
     "@onting/selenium-webdriver-message-port": "^0.0.0-0",
+    "@onting/selenium-webdriver-message-port-types": "^0.0.0-0",
     "@testduet/given-when-then": "^0.1.0",
     "@testduet/wait-for": "^0.1.1",
     "@tsconfig/strictest": "^2.0.8",

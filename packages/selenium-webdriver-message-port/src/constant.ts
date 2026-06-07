@@ -1,3 +1,4 @@
+const BIDI_CHANNEL_NAME_PREFIX = 'selenium-webdriver-message-port/bidi/';
 const ROOT_MESSAGE_PORT = '00000000-0000-0000-0000-000000000000';
 
-export { ROOT_MESSAGE_PORT };
+export { BIDI_CHANNEL_NAME_PREFIX, ROOT_MESSAGE_PORT };

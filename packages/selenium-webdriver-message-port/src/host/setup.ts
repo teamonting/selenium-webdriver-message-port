@@ -70,7 +70,7 @@ function setup(webDriver: WebDriver): {
   };
 
   const poll = async () => {
-    const entries = await webDriver.executeScript<SerializedMessage[]>(() => {
+    const entries = await webDriver.executeScript<readonly SerializedMessage[]>(() => {
       if (!globalThis.__seleniumWebDriverMessagePortFacility) {
         throw new Error('The page does not have harness installed');
       }
@@ -88,7 +88,7 @@ function setup(webDriver: WebDriver): {
       }
 
       // postMessage() will neuter MessagePort after sent, thus, every port received must be new transfer.
-      const transfer = transferPortIds.map(transferPortId => createMessagePort(transferPortId));
+      const transfer = transferPortIds.map((transferPortId: string) => createMessagePort(transferPortId));
 
       port.postMessage(unmarshal(data, transfer), transfer);
     }

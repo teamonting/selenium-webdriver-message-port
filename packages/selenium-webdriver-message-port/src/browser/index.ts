@@ -3,13 +3,25 @@
 import { v7 } from 'uuid';
 import { ROOT_MESSAGE_PORT } from '../constant.ts';
 import { marshal, unmarshal } from '../marshal.ts';
-import type { MessagePortFacility, SerializedMessage } from '../types.js';
+import type { MessageHandler, MessagePortFacility, SerializedMessage } from '../types.js';
 
 const portMap = new Map<string, MessagePort>();
 const queue: SerializedMessage[] = [];
 
 function flushAll(): readonly SerializedMessage[] {
   return Object.freeze(queue.splice(0));
+}
+
+function tryFlushToPipe() {
+  const pipingMessageHandler: MessageHandler | undefined = globalThis.__seleniumWebDriverBiDiPipeDestination;
+
+  if (pipingMessageHandler) {
+    let message: SerializedMessage | undefined;
+
+    while ((message = queue.shift())) {
+      pipingMessageHandler(JSON.stringify(message) as any);
+    }
+  }
 }
 
 function createMessagePort(portId: string): MessagePort {
@@ -52,6 +64,8 @@ function registerMessagePort(port: MessagePort, portId: string): void {
         transferPortIds
       })
     );
+
+    tryFlushToPipe();
   });
 
   port.start();
@@ -78,6 +92,22 @@ globalThis.__seleniumWebDriverMessagePortFacility = Object.freeze({
   flushAll,
   sendToBrowser
 } satisfies MessagePortFacility);
+
+let _pipe: MessageHandler | undefined = globalThis.__seleniumWebDriverBiDiPipeDestination;
+
+Object.defineProperty(globalThis, '__seleniumWebDriverBiDiPipeDestination', {
+  configurable: false,
+  enumerable: true,
+  get() {
+    return _pipe;
+  },
+  set(value: MessageHandler | undefined) {
+    _pipe = value;
+    tryFlushToPipe();
+  }
+});
+
+tryFlushToPipe();
 
 const messagePort = createMessagePort(ROOT_MESSAGE_PORT);
 

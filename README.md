@@ -111,6 +111,10 @@ Consider using `JSON.stringify` or [structured clone algorithm](https://www.npmj
 
 We do not support the new [WebDriver BiDi Protocol](https://w3c.github.io/webdriver-bidi/) yet but this is on our road map. Using BiDi could simplify some userland code.
 
+### Why we cannot auto install the `MessagePort` via `addPreloadScript`?
+
+Preloaded scripts are running in a sandboxed realm, which the `window` object is virtually separated. Modifying the sandboxed `window` object will not reflect on the same object on the running page.
+
 ## Contributions
 
 Like us? [Star](https://github.com/teamonting/selenium-webdriver-message-port/stargazers) us.

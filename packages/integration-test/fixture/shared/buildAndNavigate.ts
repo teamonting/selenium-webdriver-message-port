@@ -1,4 +1,7 @@
-import { Browser, Builder, logging } from 'selenium-webdriver';
+/// <reference types="@onting/selenium-webdriver-message-port-types/selenium-webdriver.js" />
+
+import { Browser, BrowsingContext, Builder, logging } from 'selenium-webdriver';
+import getScriptManagerInstance from 'selenium-webdriver/bidi/scriptManager.js';
 import { Options } from 'selenium-webdriver/chrome.js';
 
 export default async function buildAndNavigate(relativeURL: string) {
@@ -8,6 +11,7 @@ export default async function buildAndNavigate(relativeURL: string) {
 
   const options = new Options();
 
+  options.enableBidi();
   options.setLoggingPrefs(loggingPrefs);
 
   const webDriver = await new Builder()
@@ -18,5 +22,27 @@ export default async function buildAndNavigate(relativeURL: string) {
 
   await webDriver.navigate().to(new URL(relativeURL, 'http://web/').href);
 
-  return webDriver;
+  const browsingContextId = await webDriver.getWindowHandle();
+  const browsingContext = await BrowsingContext(webDriver, { browsingContextId });
+  const scriptManager = await getScriptManagerInstance(browsingContextId, webDriver);
+
+  const [realmInfo] = await scriptManager.getRealmsByType('window');
+
+  if (!realmInfo) {
+    throw new Error(`Internal error: no window found after navigated to ${relativeURL}`);
+  }
+
+  const teardown = async () => {
+    await scriptManager.close();
+    await browsingContext.close();
+    await webDriver.quit();
+  };
+
+  return {
+    browsingContext,
+    realmInfo,
+    scriptManager,
+    teardown,
+    webDriver
+  };
 }
