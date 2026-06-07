@@ -1,4 +1,31 @@
 declare module 'selenium-webdriver/bidi/protocolValue.js' {
+  export type RemoteValue =
+    | { type: 'array'; handle?: string; internalId?: string; value?: RemoteValue[] }
+    | { type: 'arraybuffer'; handle?: string; internalId?: string }
+    | { type: 'bigint'; value: string }
+    | { type: 'boolean'; value: boolean }
+    | { type: 'date'; handle?: string; internalId?: string; value?: string }
+    | { type: 'error'; handle?: string; internalId?: string }
+    | { type: 'function'; handle?: string; internalId?: string }
+    | { type: 'generator'; handle?: string; internalId?: string }
+    | { type: 'htmlcollection'; handle?: string; internalId?: string; value?: RemoteValue[] }
+    | { type: 'map'; handle?: string; internalId?: string; value?: [RemoteValue, RemoteValue][] }
+    | { type: 'node'; handle?: string; internalId?: string; value?: unknown }
+    | { type: 'nodelist'; handle?: string; internalId?: string; value?: RemoteValue[] }
+    | { type: 'null' }
+    | { type: 'number'; value: number | 'Infinity' | '-Infinity' | '-0' | 'NaN' }
+    | { type: 'object'; handle?: string; internalId?: string; value?: [RemoteValue, RemoteValue][] }
+    | { type: 'promise'; handle?: string; internalId?: string }
+    | { type: 'proxy'; handle?: string; internalId?: string }
+    | { type: 'regexp'; handle?: string; internalId?: string; value?: { flags?: string; pattern: string } }
+    | { type: 'set'; handle?: string; internalId?: string; value?: RemoteValue[] }
+    | { type: 'string'; value: string }
+    | { type: 'symbol'; handle?: string; internalId?: string }
+    | { type: 'typedarray'; handle?: string; internalId?: string }
+    | { type: 'undefined' }
+    | { type: 'weakref'; handle?: string; internalId?: string }
+    | { type: 'window'; handle?: string; internalId?: string; value?: { context: string; isTopLevelContext: boolean } };
+
   export class ChannelValue {
     channel: string;
     options?: SerializationOptions;

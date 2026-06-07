@@ -1,4 +1,6 @@
 declare module 'selenium-webdriver/bidi/scriptManager.js' {
+  import type { RemoteValue } from 'selenium-webdriver/bidi/protocolValue.js';
+
   export interface EvaluateResultException {
     exceptionDetails: unknown;
     realmId: string;
@@ -19,7 +21,7 @@ declare module 'selenium-webdriver/bidi/scriptManager.js' {
 
   export interface Message {
     channel: string;
-    data: unknown;
+    data: RemoteValue;
     source: unknown;
   }
 

@@ -6,9 +6,9 @@ import { marshal, unmarshal } from '../marshal.ts';
 import type { MessageHandler, MessagePortFacility, SerializedMessage } from '../types.js';
 
 const portMap = new Map<string, MessagePort>();
-const queue: SerializedMessage[] = [];
+const queue: string[] = [];
 
-function flushAll(): readonly SerializedMessage[] {
+function flushAll(): readonly string[] {
   return Object.freeze(queue.splice(0));
 }
 
@@ -16,10 +16,10 @@ function tryFlushToPipe() {
   const pipingMessageHandler: MessageHandler | undefined = globalThis.__seleniumWebDriverBiDiPipeDestination;
 
   if (pipingMessageHandler) {
-    let message: SerializedMessage | undefined;
+    let message: string | undefined;
 
-    while ((message = queue.shift())) {
-      pipingMessageHandler(JSON.stringify(message) as any);
+    while (typeof (message = queue.shift()) === 'string') {
+      pipingMessageHandler(message);
     }
   }
 }
@@ -58,7 +58,7 @@ function registerMessagePort(port: MessagePort, portId: string): void {
     });
 
     queue.push(
-      Object.freeze({
+      JSON.stringify({
         data: marshal(data, ports),
         portId,
         transferPortIds
@@ -71,8 +71,8 @@ function registerMessagePort(port: MessagePort, portId: string): void {
   port.start();
 }
 
-function sendToBrowser(message: SerializedMessage): void {
-  const { data, portId, transferPortIds } = message;
+function sendToBrowser(data: string): void {
+  const { data: payload, portId, transferPortIds } = JSON.parse(data) as SerializedMessage;
 
   const port = portMap.get(portId);
 
@@ -85,7 +85,7 @@ function sendToBrowser(message: SerializedMessage): void {
   // postMessage() will neuter MessagePort after sent, thus, every port received must be new transfer.
   const transfer = transferPortIds.map(transferPortId => createMessagePort(transferPortId));
 
-  port.postMessage(unmarshal(data, transfer), transfer);
+  port.postMessage(unmarshal(payload, transfer), transfer);
 }
 
 globalThis.__seleniumWebDriverMessagePortFacility = Object.freeze({
