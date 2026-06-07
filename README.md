@@ -62,6 +62,19 @@ messagePort.start();
 messagePort.postMessage('Hello from host!');
 ```
 
+## API
+
+```ts
+function viaBiDi(scriptManager: ScriptManager, options: BiDiOptions): Promise<{
+  readonly messagePort: MessagePort;
+}>;
+
+function viaExecuteScript(webDriver: WebDriver): {
+  readonly messagePort: MessagePort;
+  readonly poll: () => Promise<void>;
+};
+```
+
 ## Behaviors
 
 ### What can I do with `MessagePort`?
@@ -148,6 +161,16 @@ Consider using [structured clone algorithm](https://www.npmjs.com/search?q=struc
 ### Why the `MessagePort` cannot be installed automatically via `addPreloadScript`?
 
 Preloaded scripts are running in a sandboxed realm, which the `window` object is virtually separated from the window realm. Modifying the `window` object in the sandbox realm will not affect the `window` object on the page.
+
+### How are we using this library?
+
+We pair with [`message-port-rpc`](https://npmjs.com/package/message-port-rpc) to enable the page to call RPC functions on the host. For example, the page can call `webDriver.takeScreenshot()` to take a screenshot of the page.
+
+Traditionally, test suite are written in Java/Node.js, it launch the browser navigated to the HTML page, then perform some test steps on it. This is the de facto standard for testing apps.
+
+For component developers, the system-under-test (SUT) is not the HTML page, but a component hosted on the page. That means, test steps written in Java/Node.js will need to go through the page before hitting the component. This extra hop is hurting development experience (DX).
+
+Instead, we are writing test steps directly on the HTML page hosting the SUT component, with WebDriver exposed as an remoting object on the page. During development, we run the test on a long-running local browser and press <kbd>F5</kbd> to rerun the test. The test result is being visualized in real-time. This DX is smoother than the traditional setup.
 
 ## Contributions
 
