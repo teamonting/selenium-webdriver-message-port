@@ -6,6 +6,7 @@ import { ROOT_MESSAGE_PORT } from '../constant.ts';
 import { marshal, unmarshal } from '../marshal.ts';
 import { serializedMessageSchema, type SerializedMessage } from '../SerializedMessage.ts';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ExecuteFn<T extends (...args: readonly any[]) => any> = (fn: T, args: Parameters<T>) => Promise<void>;
 
 function createEngine(executeFn: ExecuteFn<(data: string) => void>): {

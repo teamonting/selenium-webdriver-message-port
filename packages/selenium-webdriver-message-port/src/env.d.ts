@@ -1,6 +1,6 @@
 /// <reference types="@onting/selenium-webdriver-message-port-types/selenium-webdriver.js" />
 
-import type { BiDiMessagePortFacility, MessageHandler, MessagePortFacility, SerializedMessage } from './types.js';
+import type { MessageHandler, MessagePortFacility } from './types.js';
 
 declare global {
   var __seleniumWebDriverMessagePortBiDiPipeDestination: MessageHandler | undefined;

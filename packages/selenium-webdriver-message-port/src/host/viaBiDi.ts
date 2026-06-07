@@ -1,9 +1,9 @@
 import { ChannelValue, LocalValue } from 'selenium-webdriver/bidi/protocolValue.js';
 import type { ScriptManager } from 'selenium-webdriver/bidi/scriptManager.js';
 import { v7 } from 'uuid';
-import { BIDI_CHANNEL_NAME_PREFIX } from '../constant';
-import type { MessageHandler } from '../types';
-import createEngine from './createEngine';
+import { BIDI_CHANNEL_NAME_PREFIX } from '../constant.ts';
+import type { MessageHandler } from '../types.ts';
+import createEngine from './createEngine.ts';
 
 type BiDiOptions = {
   realmId: string;

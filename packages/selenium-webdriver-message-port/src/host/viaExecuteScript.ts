@@ -1,6 +1,6 @@
 import type { WebDriver } from 'selenium-webdriver';
-import createEngine from './createEngine';
-import createSequencer from './createSequencer';
+import createEngine from './createEngine.ts';
+import createSequencer from './createSequencer.ts';
 
 function viaExecuteScript(webDriver: WebDriver): {
   readonly messagePort: MessagePort;
