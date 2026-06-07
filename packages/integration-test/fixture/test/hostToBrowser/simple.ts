@@ -1,4 +1,4 @@
-import { setup } from '@onting/selenium-webdriver-message-port/host';
+import { viaBiDi, viaExecuteScript } from '@onting/selenium-webdriver-message-port/host';
 import { scenario } from '@testduet/given-when-then';
 import { waitFor } from '@testduet/wait-for';
 import { expect } from 'expect';
@@ -13,14 +13,28 @@ scenario(
     bdd
       .given(
         'browser loading simple.html',
-        async () => ({ webDriver: await buildAndNavigate('hostToBrowser/simple.html') }),
-        ({ webDriver }) => webDriver.quit()
+        async () => buildAndNavigate('hostToBrowser/simple.html'),
+        ({ teardown }) => teardown()
       )
-      .and(
-        'its associated MessagePort',
-        precondition => ({ ...precondition, ...setup(precondition.webDriver) }),
-        ({ messagePort }) => messagePort.close()
-      )
+      .and.oneOf([
+        [
+          'MessagePort via executeScript',
+          precondition => ({
+            ...precondition,
+            ...viaExecuteScript(precondition.webDriver)
+          }),
+          ({ messagePort }) => messagePort.close()
+        ],
+        [
+          'MessagePort via BiDi',
+          async precondition => ({
+            ...precondition,
+            ...(await viaBiDi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
+            poll: () => Promise.resolve()
+          }),
+          ({ messagePort }) => messagePort.close()
+        ]
+      ])
       .when('a message is posted', async ({ messagePort }) => messagePort.postMessage('Hello, World!'))
       .then('should have logged the message to console', async ({ webDriver }) => {
         await waitFor(async () => {

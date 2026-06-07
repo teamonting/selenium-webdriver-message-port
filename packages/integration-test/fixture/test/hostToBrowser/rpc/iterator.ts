@@ -1,4 +1,4 @@
-import { setup } from '@onting/selenium-webdriver-message-port/host';
+import { viaBiDi, viaExecuteScript } from '@onting/selenium-webdriver-message-port/host';
 import { scenario } from '@testduet/given-when-then';
 import { waitFor } from '@testduet/wait-for';
 import { expect } from 'expect';
@@ -14,14 +14,28 @@ scenario(
     bdd
       .given(
         'browser loading rpc/iterator.html',
-        async () => ({ webDriver: await buildAndNavigate('hostToBrowser/rpc/iterator.html') }),
-        ({ webDriver }) => webDriver.quit()
+        async () => buildAndNavigate('hostToBrowser/rpc/iterator.html'),
+        ({ teardown }) => teardown()
       )
-      .and(
-        'its associated MessagePort',
-        precondition => ({ ...precondition, ...setup(precondition.webDriver) }),
-        ({ messagePort }) => messagePort.close()
-      )
+      .and.oneOf([
+        [
+          'MessagePort via executeScript',
+          precondition => ({
+            ...precondition,
+            ...viaExecuteScript(precondition.webDriver)
+          }),
+          ({ messagePort }) => messagePort.close()
+        ],
+        [
+          'MessagePort via BiDi',
+          async precondition => ({
+            ...precondition,
+            ...(await viaBiDi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
+            poll: () => Promise.resolve()
+          }),
+          ({ messagePort }) => messagePort.close()
+        ]
+      ])
       .when('the server stub is configured', precondition => ({
         ...precondition,
         serverStub: forGenerator<() => Generator<number>>(precondition.messagePort, function* () {

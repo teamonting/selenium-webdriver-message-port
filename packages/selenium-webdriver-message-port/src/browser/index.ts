@@ -1,15 +1,29 @@
 /// <reference types="../env.d.ts" />
 
 import { v7 } from 'uuid';
+import { parse } from 'valibot';
 import { ROOT_MESSAGE_PORT } from '../constant.ts';
 import { marshal, unmarshal } from '../marshal.ts';
-import type { MessagePortFacility, SerializedMessage } from '../types.js';
+import { type SerializedMessage, serializedMessageSchema } from '../SerializedMessage.ts';
+import type { MessageHandler, MessagePortFacility } from '../types.js';
 
 const portMap = new Map<string, MessagePort>();
-const queue: SerializedMessage[] = [];
+const queue: string[] = [];
 
-function flushAll(): readonly SerializedMessage[] {
+function flushAll(): readonly string[] {
   return Object.freeze(queue.splice(0));
+}
+
+function tryFlushToPipe() {
+  const pipingMessageHandler: MessageHandler | undefined = globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination;
+
+  if (pipingMessageHandler) {
+    let message: string | undefined;
+
+    while (typeof (message = queue.shift()) === 'string') {
+      pipingMessageHandler(message);
+    }
+  }
 }
 
 function createMessagePort(portId: string): MessagePort {
@@ -46,19 +60,24 @@ function registerMessagePort(port: MessagePort, portId: string): void {
     });
 
     queue.push(
-      Object.freeze({
-        data: marshal(data, ports),
-        portId,
-        transferPortIds
-      })
+      JSON.stringify(
+        parse(serializedMessageSchema, {
+          data: marshal(data, ports),
+          portId,
+          transferPortIds
+        } satisfies SerializedMessage)
+      )
     );
+
+    // Flush to pipe if there is a destination assigned.
+    tryFlushToPipe();
   });
 
   port.start();
 }
 
-function sendToBrowser(message: SerializedMessage): void {
-  const { data, portId, transferPortIds } = message;
+function sendToBrowser(data: string): void {
+  const { data: payload, portId, transferPortIds } = parse(serializedMessageSchema, JSON.parse(data));
 
   const port = portMap.get(portId);
 
@@ -71,13 +90,32 @@ function sendToBrowser(message: SerializedMessage): void {
   // postMessage() will neuter MessagePort after sent, thus, every port received must be new transfer.
   const transfer = transferPortIds.map(transferPortId => createMessagePort(transferPortId));
 
-  port.postMessage(unmarshal(data, transfer), transfer);
+  port.postMessage(unmarshal(payload, transfer), transfer);
 }
 
 globalThis.__seleniumWebDriverMessagePortFacility = Object.freeze({
   flushAll,
   sendToBrowser
 } satisfies MessagePortFacility);
+
+let pipeDestination: MessageHandler | undefined = globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination;
+
+Object.defineProperty(globalThis, '__seleniumWebDriverMessagePortBiDiPipeDestination', {
+  configurable: false,
+  enumerable: true,
+  get() {
+    return pipeDestination;
+  },
+  set(value: MessageHandler | undefined) {
+    pipeDestination = value;
+
+    // Flush to pipe when it is being assigned.
+    tryFlushToPipe();
+  }
+});
+
+// Flush to pipe when it was assigned initially before this module is loaded.
+tryFlushToPipe();
 
 const messagePort = createMessagePort(ROOT_MESSAGE_PORT);
 

@@ -1,4 +1,4 @@
-import { setup } from '@onting/selenium-webdriver-message-port/host';
+import { viaBiDi, viaExecuteScript } from '@onting/selenium-webdriver-message-port/host';
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import { forGenerator } from 'message-port-rpc';
@@ -11,38 +11,66 @@ scenario(
     bdd
       .given(
         'browser loading rpc/generator.html',
-        async () => ({ webDriver: await buildAndNavigate('browserToHost/rpc/generator.html') }),
-        ({ webDriver }) => webDriver.quit()
+        async () => buildAndNavigate('browserToHost/rpc/generator.html'),
+        ({ teardown }) => teardown()
       )
-      .and(
-        'its associated MessagePort',
-        precondition => {
-          const { messagePort, poll } = setup(precondition.webDriver);
+      .and.oneOf([
+        [
+          'MessagePort via executeScript',
+          precondition => {
+            const { messagePort, poll } = viaExecuteScript(precondition.webDriver);
 
-          const act = <T>(fn: () => Promise<T>): Promise<T> => {
-            const abortController = new AbortController();
+            const act = <T>(fn: () => Promise<T>): Promise<T> => {
+              const abortController = new AbortController();
+              let lastPollPromise: Promise<void> | undefined;
 
-            (async () => {
-              while (!abortController.signal.aborted) {
-                try {
-                  await poll();
-                } catch {}
+              (async () => {
+                while (!abortController.signal.aborted) {
+                  try {
+                    lastPollPromise = poll().catch(() => {});
 
-                await new Promise(resolve => setTimeout(resolve, 100));
-              }
-            })();
+                    await lastPollPromise;
 
-            const promise = fn();
+                    lastPollPromise = undefined;
+                  } catch {}
 
-            promise.finally(() => abortController.abort());
+                  await new Promise(resolve => setTimeout(resolve, 100));
+                }
+              })();
 
-            return promise;
-          };
+              return fn().then(
+                async result => {
+                  abortController.abort();
 
-          return { ...precondition, act, messagePort, poll };
-        },
-        ({ messagePort }) => messagePort.close()
-      )
+                  await lastPollPromise;
+
+                  return result;
+                },
+                async reason => {
+                  abortController.abort();
+
+                  await lastPollPromise;
+
+                  return Promise.reject(reason);
+                }
+              );
+            };
+
+            return { ...precondition, act, messagePort, poll };
+          },
+          ({ messagePort }) => messagePort.close()
+        ],
+        [
+          'MessagePort via BiDi',
+          async precondition => ({
+            ...precondition,
+            ...(await viaBiDi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
+            act: <T>(fn: () => Promise<T>): Promise<T> => fn(),
+            poll: () => Promise.resolve()
+          }),
+          ({ messagePort }) => messagePort.close()
+        ]
+      ])
       .and('client stub', precondition => ({
         ...precondition,
         clientStub: forGenerator<(value: number) => Generator<number>>(precondition.messagePort)

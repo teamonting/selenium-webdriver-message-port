@@ -12,8 +12,8 @@
     "bump": "npm run bump:prod && npm run bump:dev",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // {}) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | has($K) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // {}) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | has($K) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
-    "docker": "docker compose up --quiet-pull --scale chromium=4",
-    "docker:solo": "docker compose --file ./docker-compose-solo.yml up --quiet-pull",
+    "docker": "docker compose --file ./docker-compose.yml up --quiet-pull",
+    "docker:hub": "docker compose --file ./docker-compose.hub.yml up --quiet-pull --scale chromium=4",
     "init": "npm run init:dev --if-present && npm run init:prod --if-present",
     "init:dev": "npm install --save-dev @happy-dom/global-registrator @tsconfig/strictest expect resolve-cwd typescript",
     "init:prod": "npm install --save @onting/test-harness@0.0.0-0 @onting/selenium-webdriver-message-port@0.0.0-0",
@@ -28,6 +28,7 @@
   "pinDependencies": {},
   "localPeerDependencies": {
     "@onting/selenium-webdriver-message-port": "0.0.0-0",
+    "@onting/common": "0.0.0-0",
     "@onting/test-harness": "0.0.0-0"
   },
   "devDependencies": {
@@ -51,6 +52,7 @@
   ],
   "exports": {},
   "dependencies": {
+    "@onting/common": "^0.0.0-0",
     "@onting/test-harness": "^0.0.0-0"
   }
 }

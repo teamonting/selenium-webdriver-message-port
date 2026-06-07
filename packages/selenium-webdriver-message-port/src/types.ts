@@ -1,13 +1,8 @@
-type SerializedMessage = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly data: any;
-  readonly portId: string;
-  readonly transferPortIds: readonly string[];
-};
+type MessageHandler = (data: string) => void;
 
 interface MessagePortFacility {
-  flushAll(): readonly SerializedMessage[];
-  sendToBrowser(message: SerializedMessage): void;
+  flushAll(): readonly string[];
+  sendToBrowser(data: string): void;
 }
 
-export type { MessagePortFacility, SerializedMessage };
+export type { MessageHandler, MessagePortFacility };

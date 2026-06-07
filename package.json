@@ -18,6 +18,7 @@
     "test": "npm run test --if-present --workspaces"
   },
   "workspaces": [
+    "packages/common",
     "packages/test-harness",
     "packages/selenium-webdriver-message-port",
     "packages/integration-test",
