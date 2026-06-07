@@ -23,7 +23,6 @@ export default async function buildAndNavigate(relativeURL: string) {
   await webDriver.navigate().to(new URL(relativeURL, 'http://web/').href);
 
   const browsingContextId = await webDriver.getWindowHandle();
-  const browsingContext = await BrowsingContext(webDriver, { browsingContextId });
   const scriptManager = await getScriptManagerInstance(browsingContextId, webDriver);
 
   const [realmInfo] = await scriptManager.getRealmsByType('window');
@@ -34,12 +33,10 @@ export default async function buildAndNavigate(relativeURL: string) {
 
   const teardown = async () => {
     await scriptManager.close();
-    await browsingContext.close();
     await webDriver.quit();
   };
 
   return {
-    browsingContext,
     realmInfo,
     scriptManager,
     teardown,
