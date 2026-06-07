@@ -21,7 +21,9 @@ scenario(
         [
           'MessagePort via executeScript',
           precondition => ({
-            ...precondition, ...viaExecuteScript(precondition.webDriver) }),
+            ...precondition,
+            ...viaExecuteScript(precondition.webDriver)
+          }),
           ({ messagePort }) => messagePort.close()
         ],
         [

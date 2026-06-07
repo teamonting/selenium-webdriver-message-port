@@ -29,7 +29,7 @@ scenario(
           async precondition => ({
             ...precondition,
             ...(await viaBiDi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
-            poll: ()=>Promise.resolve()
+            poll: () => Promise.resolve()
           }),
           ({ messagePort }) => messagePort.close()
         ]

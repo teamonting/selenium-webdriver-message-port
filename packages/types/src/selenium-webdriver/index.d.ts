@@ -47,7 +47,7 @@ declare module 'selenium-webdriver' {
 
   function BrowsingContext(
     driver: WebDriver,
-    options: { browsingContextId?: string; createParameters?: unknown; type?: string },
+    options: { browsingContextId?: string; createParameters?: unknown; type?: string }
   ): Promise<BrowsingContextInstance>;
 
   class WebDriver {

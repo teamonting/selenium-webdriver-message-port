@@ -39,7 +39,7 @@ declare module 'selenium-webdriver/bidi/scriptManager.js' {
     addPreloadScript(
       functionDeclaration: string,
       argumentValueList?: Array<LocalValue> | null,
-      sandbox?: string | null,
+      sandbox?: string | null
     ): Promise<string>;
     callFunctionInBrowsingContext(
       browsingContextId: string,
@@ -48,7 +48,7 @@ declare module 'selenium-webdriver/bidi/scriptManager.js' {
       argumentValueList?: Array<LocalValue> | null,
       thisParameter?: unknown,
       resultOwnership?: ResultOwnership | null,
-      sandbox?: string | null,
+      sandbox?: string | null
     ): Promise<EvaluateResultSuccess | EvaluateResultException>;
     callFunctionInRealm(
       realmId: string,
@@ -56,27 +56,23 @@ declare module 'selenium-webdriver/bidi/scriptManager.js' {
       awaitPromise: boolean,
       argumentValueList?: Array<LocalValue> | null,
       thisParameter?: unknown,
-      resultOwnership?: ResultOwnership | null,
+      resultOwnership?: ResultOwnership | null
     ): Promise<EvaluateResultSuccess | EvaluateResultException>;
     close(): Promise<void>;
-    disownBrowsingContextScript(
-      browsingContextId: string,
-      handles: string[],
-      sandbox?: string | null,
-    ): Promise<void>;
+    disownBrowsingContextScript(browsingContextId: string, handles: string[], sandbox?: string | null): Promise<void>;
     disownRealmScript(realmId: string, handles: string[]): Promise<void>;
     evaluateFunctionInBrowsingContext(
       browsingContextId: string,
       expression: string,
       awaitPromise: boolean,
       resultOwnership?: ResultOwnership | null,
-      sandbox?: string | null,
+      sandbox?: string | null
     ): Promise<EvaluateResultSuccess | EvaluateResultException>;
     evaluateFunctionInRealm(
       realmId: string,
       expression: string,
       awaitPromise: boolean,
-      resultOwnership?: ResultOwnership | null,
+      resultOwnership?: ResultOwnership | null
     ): Promise<EvaluateResultSuccess | EvaluateResultException>;
     getAllRealms(): Promise<RealmInfo[]>;
     getRealmsByType(type: string): Promise<RealmInfo[]>;
@@ -95,6 +91,6 @@ declare module 'selenium-webdriver/bidi/scriptManager.js' {
 
   export default function getScriptManagerInstance(
     browsingContextId: string | string[],
-    driver: unknown,
+    driver: unknown
   ): Promise<ScriptManager>;
 }
