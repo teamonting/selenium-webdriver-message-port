@@ -25,19 +25,15 @@
     "test:types": "node --experimental-strip-types --import @onting/test-harness/test-types.import --test **/*.test-types.ts",
     "test:unit": "node --experimental-strip-types --experimental-test-coverage --experimental-test-isolation=none --test"
   },
-  "bundledDependencies": [
-    "@onting/selenium-webdriver-message-port-types"
-  ],
   "pinDependencies": {},
   "localPeerDependencies": {
     "@onting/selenium-webdriver-message-port": "0.0.0-0",
-    "@onting/selenium-webdriver-message-port-types": "0.0.0-0",
+    "@onting/common": "0.0.0-0",
     "@onting/test-harness": "0.0.0-0"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.9.0",
     "@onting/selenium-webdriver-message-port": "^0.0.0-0",
-    "@onting/selenium-webdriver-message-port-types": "^0.0.0-0",
     "@testduet/given-when-then": "^0.1.0",
     "@testduet/wait-for": "^0.1.1",
     "@tsconfig/strictest": "^2.0.8",
@@ -56,6 +52,7 @@
   ],
   "exports": {},
   "dependencies": {
+    "@onting/common": "^0.0.0-0",
     "@onting/test-harness": "^0.0.0-0"
   }
 }

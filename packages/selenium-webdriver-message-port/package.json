@@ -58,7 +58,7 @@
   },
   "pinDependencies": {},
   "devDependencies": {
-    "@onting/selenium-webdriver-message-port-types": "^0.0.0-0",
+    "@onting/common": "^0.0.0-0",
     "@onting/test-harness": "^0.0.0-0",
     "@tsconfig/recommended": "^1.0.13",
     "@tsconfig/strictest": "^2.0.8",
