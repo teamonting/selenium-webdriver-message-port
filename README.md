@@ -79,7 +79,7 @@ function viaExecuteScript(webDriver: WebDriver): {
 
 ### What can I do with `MessagePort`?
 
-`MessagePort` is an asynchronous bidirectional communication channel between two discrete JavaScript VMs.
+`MessagePort` is an asynchronous bidirectional communication channel between two discrete JavaScript processes.
 
 [`message-port-rpc`](https://npmjs.com/package/message-port-rpc) leverage `MessagePort` and turn any function into remoting function (RPC). Client calling the RPC function will have the arguments transferred to the server via `MessagePort`. And the server returning the RPC function will have the return value transferred back to the client.
 
