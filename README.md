@@ -170,7 +170,7 @@ Although we can derive `ScriptManager` from `WebDriver`, we prefer `ScriptManage
 
 We prefer developers to control object lifecycle themselves where possible.
 
-### How are we using this library?
+### How are we using this package?
 
 We pair with [`message-port-rpc`](https://npmjs.com/package/message-port-rpc) to enable the page to call RPC functions on the host. For example, the page can call `webDriver.takeScreenshot()` to take a screenshot of the page.
 
