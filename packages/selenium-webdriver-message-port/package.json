@@ -74,6 +74,7 @@
   },
   "dependencies": {
     "uuid": "^14.0.0",
+    "valibot": "^1.4.1",
     "workthru": "^0.1.0"
   },
   "peerDependencies": {

@@ -3,19 +3,26 @@ import overrideConfig from './tsup.config.override.ts';
 
 const baseConfig: Options = {
   dts: true,
-  entry: {
-    browser: './src/browser/index.ts',
-    host: './src/host/index.ts',
-    index: './src/index.ts'
-  },
   sourcemap: true
 };
 
 export default defineConfig([
   overrideConfig({
     ...baseConfig,
+    entry: {
+      host: './src/host/index.ts',
+      index: './src/index.ts'
+    },
     format: ['esm'],
-    noExternal: ['uuid', 'workthru'],
+    target: 'esnext'
+  }),
+  overrideConfig({
+    ...baseConfig,
+    entry: {
+      browser: './src/browser/index.ts'
+    },
+    format: ['esm'],
+    noExternal: ['uuid', 'valibot', 'workthru'],
     target: 'esnext'
   })
 ]);

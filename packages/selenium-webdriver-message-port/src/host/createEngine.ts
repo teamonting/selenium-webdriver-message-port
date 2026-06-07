@@ -1,9 +1,10 @@
 /// <reference types="../env.d.ts" />
 
 import { v7 } from 'uuid';
+import { parse } from 'valibot';
 import { ROOT_MESSAGE_PORT } from '../constant.ts';
 import { marshal, unmarshal } from '../marshal.ts';
-import type { SerializedMessage } from '../types.ts';
+import { serializedMessageSchema, type SerializedMessage } from '../SerializedMessage.ts';
 
 type ExecuteFn<T extends (...args: readonly any[]) => any> = (fn: T, args: Parameters<T>) => Promise<void>;
 
@@ -42,20 +43,22 @@ function createEngine(executeFn: ExecuteFn<(data: string) => void>): {
           globalThis.__seleniumWebDriverMessagePortFacility.sendToBrowser(data);
         },
         [
-          JSON.stringify({
-            data: marshal(data, ports),
-            portId,
-            transferPortIds: ports.map(port => {
-              // Because MessagePort will be neutered on transfer, thus, postMessage() cannot transfer the same MessagePort twice.
-              // We don't need to check if the port already have an ID or not, it must be new.
-              // Otherwise postMessage() would have already fail and should never reach this code block.
-              const id = v7();
+          JSON.stringify(
+            parse(serializedMessageSchema, {
+              data: marshal(data, ports),
+              portId,
+              transferPortIds: ports.map(port => {
+                // Because MessagePort will be neutered on transfer, thus, postMessage() cannot transfer the same MessagePort twice.
+                // We don't need to check if the port already have an ID or not, it must be new.
+                // Otherwise postMessage() would have already fail and should never reach this code block.
+                const id = v7();
 
-              registerMessagePort(port, id);
+                registerMessagePort(port, id);
 
-              return id;
-            })
-          } satisfies SerializedMessage)
+                return id;
+              })
+            } satisfies SerializedMessage)
+          )
         ]
       ).catch(error => console.error(error));
     });
@@ -64,7 +67,7 @@ function createEngine(executeFn: ExecuteFn<(data: string) => void>): {
   };
 
   const processIncomingMessage = (data: string) => {
-    const { data: payload, portId, transferPortIds } = JSON.parse(data);
+    const { data: payload, portId, transferPortIds } = parse(serializedMessageSchema, JSON.parse(data));
 
     const port = portMap.get(portId);
 

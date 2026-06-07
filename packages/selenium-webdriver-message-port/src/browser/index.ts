@@ -1,9 +1,11 @@
 /// <reference types="../env.d.ts" />
 
 import { v7 } from 'uuid';
+import { parse } from 'valibot';
 import { ROOT_MESSAGE_PORT } from '../constant.ts';
 import { marshal, unmarshal } from '../marshal.ts';
-import type { MessageHandler, MessagePortFacility, SerializedMessage } from '../types.js';
+import { type SerializedMessage, serializedMessageSchema } from '../SerializedMessage.ts';
+import type { MessageHandler, MessagePortFacility } from '../types.js';
 
 const portMap = new Map<string, MessagePort>();
 const queue: string[] = [];
@@ -13,7 +15,7 @@ function flushAll(): readonly string[] {
 }
 
 function tryFlushToPipe() {
-  const pipingMessageHandler: MessageHandler | undefined = globalThis.__seleniumWebDriverBiDiPipeDestination;
+  const pipingMessageHandler: MessageHandler | undefined = globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination;
 
   if (pipingMessageHandler) {
     let message: string | undefined;
@@ -58,13 +60,16 @@ function registerMessagePort(port: MessagePort, portId: string): void {
     });
 
     queue.push(
-      JSON.stringify({
-        data: marshal(data, ports),
-        portId,
-        transferPortIds
-      })
+      JSON.stringify(
+        parse(serializedMessageSchema, {
+          data: marshal(data, ports),
+          portId,
+          transferPortIds
+        } satisfies SerializedMessage)
+      )
     );
 
+    // Flush to pipe if there is a destination assigned.
     tryFlushToPipe();
   });
 
@@ -72,7 +77,7 @@ function registerMessagePort(port: MessagePort, portId: string): void {
 }
 
 function sendToBrowser(data: string): void {
-  const { data: payload, portId, transferPortIds } = JSON.parse(data) as SerializedMessage;
+  const { data: payload, portId, transferPortIds } = parse(serializedMessageSchema, JSON.parse(data));
 
   const port = portMap.get(portId);
 
@@ -93,20 +98,23 @@ globalThis.__seleniumWebDriverMessagePortFacility = Object.freeze({
   sendToBrowser
 } satisfies MessagePortFacility);
 
-let _pipe: MessageHandler | undefined = globalThis.__seleniumWebDriverBiDiPipeDestination;
+let pipeDestination: MessageHandler | undefined = globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination;
 
-Object.defineProperty(globalThis, '__seleniumWebDriverBiDiPipeDestination', {
+Object.defineProperty(globalThis, '__seleniumWebDriverMessagePortBiDiPipeDestination', {
   configurable: false,
   enumerable: true,
   get() {
-    return _pipe;
+    return pipeDestination;
   },
   set(value: MessageHandler | undefined) {
-    _pipe = value;
+    pipeDestination = value;
+
+    // Flush to pipe when it is being assigned.
     tryFlushToPipe();
   }
 });
 
+// Flush to pipe when it was assigned initially before this module is loaded.
 tryFlushToPipe();
 
 const messagePort = createMessagePort(ROOT_MESSAGE_PORT);

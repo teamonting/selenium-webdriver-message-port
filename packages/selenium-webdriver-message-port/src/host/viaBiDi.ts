@@ -39,7 +39,7 @@ async function viaBiDi(
     options.realmId,
     '' +
       ((sendMessage: MessageHandler) => {
-        globalThis.__seleniumWebDriverBiDiPipeDestination = sendMessage;
+        globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination = sendMessage;
       }),
     true,
     [LocalValue.createChannelValue(new ChannelValue(channelName))]

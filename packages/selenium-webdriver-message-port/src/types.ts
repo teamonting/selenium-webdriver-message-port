@@ -1,9 +1,3 @@
-type SerializedMessage = {
-  readonly data: unknown;
-  readonly portId: string;
-  readonly transferPortIds: readonly string[];
-};
-
 type MessageHandler = (data: string) => void;
 
 interface MessagePortFacility {
@@ -11,4 +5,4 @@ interface MessagePortFacility {
   sendToBrowser(data: string): void;
 }
 
-export type { MessageHandler, MessagePortFacility, SerializedMessage };
+export type { MessageHandler, MessagePortFacility };
