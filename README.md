@@ -162,6 +162,14 @@ Consider using [structured clone algorithm](https://www.npmjs.com/search?q=struc
 
 Preloaded scripts are running in a sandboxed realm, which the `window` object is virtually separated from the window realm. Modifying the `window` object in the sandbox realm will not affect the `window` object on the page.
 
+### Why `viaBiDi` is demanding `ScriptManager` but not `WebDriver`?
+
+Although we can derive `ScriptManager` from `WebDriver`, we prefer `ScriptManager` to be passed in.
+
+`ScriptManager` requires lifecycle management. When tearing down, `ScriptManager.close()` must be called to release allocated resources.
+
+We prefer developers to control object lifecycle themselves where possible.
+
 ### How are we using this library?
 
 We pair with [`message-port-rpc`](https://npmjs.com/package/message-port-rpc) to enable the page to call RPC functions on the host. For example, the page can call `webDriver.takeScreenshot()` to take a screenshot of the page.
