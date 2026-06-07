@@ -6,6 +6,12 @@ services:
       SE_EVENT_BUS_PUBLISH_PORT: 4442
       SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
       SE_NODE_SESSION_TIMEOUT: 15
+    healthcheck:
+      interval: 1s
+      retries: 30
+      start_period: 30s
+      test: ["CMD-SHELL", "curl -s -f http://localhost:4444/wd/hub/status 2>/dev/null | jq '.value.nodes | length > 0' | grep -q true"]
+      timeout: 10s
     image: selenium/standalone-chromium:148.0
     ports:
       - "4444:4444"
