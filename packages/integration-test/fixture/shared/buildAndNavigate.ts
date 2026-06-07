@@ -32,8 +32,11 @@ export default async function buildAndNavigate(relativeURL: string) {
   }
 
   const teardown = async () => {
-    await scriptManager.close();
-    await webDriver.quit();
+    try {
+      await scriptManager.close();
+    } finally {
+      await webDriver.quit();
+    }
   };
 
   return {
