@@ -25,9 +25,13 @@
     "test:types": "node --experimental-strip-types --import @onting/test-harness/test-types.import --test **/*.test-types.ts",
     "test:unit": "node --experimental-strip-types --experimental-test-coverage --experimental-test-isolation=none --test"
   },
+  "bundledDependencies": [
+    "@onting/selenium-webdriver-message-port-types"
+  ],
   "pinDependencies": {},
   "localPeerDependencies": {
     "@onting/selenium-webdriver-message-port": "0.0.0-0",
+    "@onting/selenium-webdriver-message-port-types": "0.0.0-0",
     "@onting/test-harness": "0.0.0-0"
   },
   "devDependencies": {
