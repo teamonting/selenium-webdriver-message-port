@@ -1,4 +1,4 @@
-import { bidi, setup } from '@onting/selenium-webdriver-message-port/host';
+import { viaBiDi, viaExecuteScript } from '@onting/selenium-webdriver-message-port/host';
 import { scenario } from '@testduet/given-when-then';
 import { waitFor } from '@testduet/wait-for';
 import { expect } from 'expect';
@@ -20,14 +20,17 @@ scenario(
       .and.oneOf([
         [
           'MessagePort via executeScript',
-          precondition => ({ ...precondition, ...setup(precondition.webDriver) }),
+          precondition => ({
+            ...precondition,
+            ...viaExecuteScript(precondition.webDriver)
+          }),
           ({ messagePort }) => messagePort.close()
         ],
         [
           'MessagePort via BiDi',
           async precondition => ({
             ...precondition,
-            ...(await bidi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
+            ...(await viaBiDi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
             poll: () => Promise.resolve()
           }),
           ({ messagePort }) => messagePort.close()

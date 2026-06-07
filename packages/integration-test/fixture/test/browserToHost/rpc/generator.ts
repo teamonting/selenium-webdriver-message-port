@@ -1,4 +1,4 @@
-import { bidi, setup } from '@onting/selenium-webdriver-message-port/host';
+import { viaBiDi, viaExecuteScript } from '@onting/selenium-webdriver-message-port/host';
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import { forGenerator } from 'message-port-rpc';
@@ -18,7 +18,7 @@ scenario(
         [
           'MessagePort via executeScript',
           precondition => {
-            const { messagePort, poll } = setup(precondition.webDriver);
+            const { messagePort, poll } = viaExecuteScript(precondition.webDriver);
 
             const act = <T>(fn: () => Promise<T>): Promise<T> => {
               const abortController = new AbortController();
@@ -64,7 +64,7 @@ scenario(
           'MessagePort via BiDi',
           async precondition => ({
             ...precondition,
-            ...(await bidi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
+            ...(await viaBiDi(precondition.scriptManager, { realmId: precondition.realmInfo.realmId })),
             act: <T>(fn: () => Promise<T>): Promise<T> => fn(),
             poll: () => Promise.resolve()
           }),

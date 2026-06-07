@@ -1,2 +1,2 @@
-export { default as bidi } from './viaBiDi.ts';
-export { default as setup } from './viaExecuteScript.ts';
+export { default as viaBiDi } from './viaBiDi.ts';
+export { default as viaExecuteScript } from './viaExecuteScript.ts';
