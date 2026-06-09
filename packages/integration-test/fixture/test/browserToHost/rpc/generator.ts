@@ -1,4 +1,4 @@
-import { viaBiDi, viaExecuteScript } from '@onting/selenium-webdriver-message-port/host';
+import { viaBiDi, viaExecuteScript } from '@onting/selenium-webdriver-message-port/host.js';
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import { forGenerator } from 'message-port-rpc';
