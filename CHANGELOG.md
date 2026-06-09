@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed `MessagePort` should close if `viaBiDi()` call failed prematurely, in PR [#XXX](https://github.com/teamonting/selenium-webdriver-message-port/pull/XXX), by [@compulim](https://github.com/compulim)
+
 ## [0.1.0] - 2026-06-08
 
 ### Added

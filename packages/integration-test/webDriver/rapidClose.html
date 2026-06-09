@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script type="module">
+      const worker = new Worker('./rapidClose.worker.js');
+
+      import { messagePort } from '/static/js/browser.js';
+
+      messagePort.addEventListener('message', ({ data }) => worker.terminate(), { once: true });
+
+      messagePort.start();
+    </script>
+  </body>
+</html>
