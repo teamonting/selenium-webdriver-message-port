@@ -21,29 +21,35 @@ async function viaBiDi(
     await scriptManager.callFunctionInRealm(options.realmId, '' + fn, false, [LocalValue.createStringValue(data)]);
   });
 
-  await scriptManager.onMessage(event => {
-    if (event.channel !== channelName) {
-      return;
-    }
+  try {
+    await scriptManager.onMessage(event => {
+      if (event.channel !== channelName) {
+        return;
+      }
 
-    if (event.data.type !== 'string') {
-      console.warn('Received message must be of type string, probably version mismatch.');
+      if (event.data.type !== 'string') {
+        console.warn('Received message must be of type string, probably version mismatch.');
 
-      return;
-    }
+        return;
+      }
 
-    processIncomingMessage(event.data.value);
-  });
+      processIncomingMessage(event.data.value);
+    });
 
-  await scriptManager.callFunctionInRealm(
-    options.realmId,
-    '' +
-      ((sendMessage: MessageHandler) => {
-        globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination = sendMessage;
-      }),
-    true,
-    [LocalValue.createChannelValue(new ChannelValue(channelName))]
-  );
+    await scriptManager.callFunctionInRealm(
+      options.realmId,
+      '' +
+        ((sendMessage: MessageHandler) => {
+          globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination = sendMessage;
+        }),
+      true,
+      [LocalValue.createChannelValue(new ChannelValue(channelName))]
+    );
+  } catch (error) {
+    messagePort.close();
+
+    throw error;
+  }
 
   return { messagePort };
 }
