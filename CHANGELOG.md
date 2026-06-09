@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- 💥 Added `.js` suffix to named exports, in PR [#8](https://github.com/teamonting/selenium-webdriver-message-port/pull/8), by [@compulim](https://github.com/compulim)
+   - `@onting/selenium-webdriver-messageport/browser` is now `@onting/selenium-webdriver-messageport/browser.js`
+   - `@onting/selenium-webdriver-messageport/host` is now `@onting/selenium-webdriver-messageport/host.js`
+
 ### Fixed
 
 - Fixed `MessagePort` should close if `viaBiDi()` call failed prematurely, in PR [#7](https://github.com/teamonting/selenium-webdriver-message-port/pull/7), by [@compulim](https://github.com/compulim)

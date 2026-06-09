@@ -23,11 +23,11 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./browser": {
+    "./browser.js": {
       "types": "./dist/browser.d.ts",
       "default": "./dist/browser.js"
     },
-    "./host": {
+    "./host.js": {
       "types": "./dist/host.d.ts",
       "default": "./dist/host.js"
     }
