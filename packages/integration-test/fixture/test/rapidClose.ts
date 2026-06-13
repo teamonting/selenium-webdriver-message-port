@@ -25,7 +25,8 @@ scenario(
       )
       .and('ScriptManager of worker', async precondition => {
         const workerRealmInfo = await waitFor(async () => {
-          const realms: readonly { readonly realmType: string }[] = await precondition.scriptManager.getAllRealms();
+          const realms: readonly { readonly realmType?: string | undefined }[] =
+            await precondition.scriptManager.getAllRealms();
           const workerRealm = realms.find(realm => realm.realmType === 'dedicated-worker');
 
           expect(workerRealm).toBeTruthy();
