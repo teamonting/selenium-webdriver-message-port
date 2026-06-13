@@ -36,8 +36,11 @@ scenario(
         ]
       ])
       .when('listening to "message" event once', precondition => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const one = {} as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const two = {} as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const three = {} as any;
 
         one.two = two;
