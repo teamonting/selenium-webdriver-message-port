@@ -22,7 +22,7 @@ export default defineConfig([
       browser: './src/browser/index.ts'
     },
     format: ['esm'],
-    noExternal: ['uuid', 'valibot', 'workthru'],
+    noExternal: ['@ungap/structured-clone', 'uuid', 'valibot', 'workthru'],
     target: 'esnext'
   })
 ]);

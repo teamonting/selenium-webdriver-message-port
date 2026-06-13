@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added [structured clone algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm) for marshalling objects, in PR [#XXX](https://github.com/teamonting/selenium-webdriver-message-port/pull/XXX), by [@compulim](https://github.com/compulim)
+
 ### Changed
 
 - 💥 Added `.js` suffix to named exports, in PR [#8](https://github.com/teamonting/selenium-webdriver-message-port/pull/8), by [@compulim](https://github.com/compulim)
-   - `@onting/selenium-webdriver-messageport/browser` is now `@onting/selenium-webdriver-messageport/browser.js`
-   - `@onting/selenium-webdriver-messageport/host` is now `@onting/selenium-webdriver-messageport/host.js`
+  - `@onting/selenium-webdriver-messageport/browser` is now `@onting/selenium-webdriver-messageport/browser.js`
+  - `@onting/selenium-webdriver-messageport/host` is now `@onting/selenium-webdriver-messageport/host.js`
 
 ### Fixed
 
