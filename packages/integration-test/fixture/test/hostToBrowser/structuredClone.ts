@@ -36,9 +36,9 @@ scenario(
         ]
       ])
       .when('listening to "message" event once', precondition => {
-        let one = {} as any;
-        let two = {} as any;
-        let three = {} as any;
+        const one = {} as any;
+        const two = {} as any;
+        const three = {} as any;
 
         one.two = two;
         two.three = three;

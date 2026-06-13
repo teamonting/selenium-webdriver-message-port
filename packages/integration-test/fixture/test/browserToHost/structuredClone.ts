@@ -48,6 +48,7 @@ scenario(
           expect(messageEvents).toHaveLength(1);
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const one = messageEvents[0]!.data as any;
 
         expect(one.two.three.one).toBe(one);
