@@ -1,3 +1,6 @@
+/// <reference types="@onting/common/ungap__structured-clone.js" />
+
+import { deserialize, serialize } from '@ungap/structured-clone';
 import { workthru } from 'workthru';
 
 const MESSAGE_PORT = '@@__SELENIUM_WEBDRIVER_MESSAGE_PORT__@@';
@@ -17,19 +20,21 @@ const MESSAGE_PORT = '@@__SELENIUM_WEBDRIVER_MESSAGE_PORT__@@';
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function marshal(target: any, transferable: readonly Transferable[]): any {
-  return workthru(target, value => {
-    if (value instanceof MessagePort) {
-      const index = transferable.indexOf(value);
+  return serialize(
+    workthru(target, value => {
+      if (value instanceof MessagePort) {
+        const index = transferable.indexOf(value);
 
-      if (index === -1) {
-        throw new Error('Cannot marshal MessagePort: it must be included in the transfer list');
+        if (index === -1) {
+          throw new Error('Cannot marshal MessagePort: it must be included in the transfer list');
+        }
+
+        return [MESSAGE_PORT, index] as const;
       }
 
-      return [MESSAGE_PORT, index] as const;
-    }
-
-    return value;
-  });
+      return value;
+    })
+  );
 }
 
 /**
@@ -47,7 +52,7 @@ function marshal(target: any, transferable: readonly Transferable[]): any {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function unmarshal(target: any, transferable: readonly Transferable[]): any {
-  return workthru(target, value => {
+  return workthru(deserialize(target), value => {
     if (Array.isArray(value) && value[0] === MESSAGE_PORT) {
       const index = value[1];
 

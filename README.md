@@ -4,7 +4,7 @@
 
 ## Background
 
-[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort) is the JavaScript standard communication channel. We are bringing `MessagePort` to [`selenium-webdriver`](https://npmjs.com/package/selenium-webdriver) by leveraging [`ChannelValue`](https://www.w3.org/TR/webdriver-bidi/#cddl-type-scriptchannelvalue) and [`callFunctionInRealm()`](https://www.w3.org/TR/webdriver-bidi/#command-script-callFunction). And optionally, [`executeScript`](https://www.w3.org/TR/webdriver1/#execute-script).
+[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort) is the JavaScript standard communication channel. We are bringing `MessagePort` to [`selenium-webdriver`](https://npmjs.com/package/selenium-webdriver) by leveraging [`ChannelValue`](https://www.w3.org/TR/webdriver-bidi/#cddl-type-scriptchannelvalue) and [`callFunctionInRealm()`](https://www.w3.org/TR/webdriver-bidi/#command-script-callFunction). And optionally, [`executeScript`](https://www.w3.org/TR/webdriver1/#execute-script). Cyclic objects are supported through limited [structured clone algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm) implementation.
 
 This enables libraries that use `MessagePort` to function across the host and the browser, such as [`message-port-rpc`](https://npmjs.com/package/message-port-rpc).
 
@@ -109,7 +109,7 @@ await log('Hello from host!');
 
 ### What can be transferred across the `MessagePort`?
 
-Data are serialized as JSON when crossing serialization context. We also support transferring `MessagePort`.
+Data are marshalled using [structured clone algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm) by [@ungap/structured-clone](https://www.npmjs.com/package/@ungap/structured-clone) package. In addition, we also support transferring `MessagePort`.
 
 ### Why are my tests lingering?
 
@@ -151,12 +151,6 @@ await poll();
 Call `MessagePort.start()` only after all `MessagePort.addEventListener()` are registered. The `start()` will uncork the `MessagePort` and messages will flow through.
 
 If event listeners are not registered before `start()`, messages sent before the registration will be lost.
-
-### Why `undefined` values are not being sent?
-
-For best compatibility, we serialize data as JSON when crossing serialization context.
-
-Consider using [structured clone algorithm](https://www.npmjs.com/search?q=structured%20clone%20algorithm) to preserve values.
 
 ### Why the `MessagePort` cannot be installed automatically via `addPreloadScript`?
 

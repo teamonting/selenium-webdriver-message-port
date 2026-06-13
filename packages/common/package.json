@@ -10,6 +10,10 @@
     "./selenium-webdriver.js": {
       "types": "./src/selenium-webdriver.d.ts",
       "default": "./src/selenium-webdriver.js"
+    },
+    "./ungap__structured-clone.js": {
+      "types": "./src/ungap__structured-clone.d.ts",
+      "default": "./src/ungap__structured-clone.js"
     }
   },
   "main": "./src/index.js",

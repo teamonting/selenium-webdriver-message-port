@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script type="module">
+      import { messagePort } from '/static/js/browser.js';
+
+      const one = {};
+      const two = {};
+      const three = {};
+
+      one.two = two;
+      two.three = three;
+      three.one = one;
+
+      messagePort.postMessage(one);
+    </script>
+  </body>
+</html>
