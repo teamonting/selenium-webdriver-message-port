@@ -52,21 +52,19 @@ function marshal(target: any, transferable: readonly Transferable[]): any {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function unmarshal(target: any, transferable: readonly Transferable[]): any {
-  return deserialize(
-    workthru(target, value => {
-      if (Array.isArray(value) && value[0] === MESSAGE_PORT) {
-        const index = value[1];
+  return workthru(deserialize(target), value => {
+    if (Array.isArray(value) && value[0] === MESSAGE_PORT) {
+      const index = value[1];
 
-        if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index >= transferable.length) {
-          throw new Error(`Cannot unmarshal MessagePort: invalid transfer index ${String(index)}`);
-        }
-
-        return transferable[index];
+      if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index >= transferable.length) {
+        throw new Error(`Cannot unmarshal MessagePort: invalid transfer index ${String(index)}`);
       }
 
-      return value;
-    })
-  );
+      return transferable[index];
+    }
+
+    return value;
+  });
 }
 
 export { marshal, unmarshal };
