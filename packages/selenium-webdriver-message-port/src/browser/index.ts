@@ -3,11 +3,7 @@
 import { v7 } from 'uuid';
 import { parse } from 'valibot';
 import { ROOT_MESSAGE_PORT } from '../constant.ts';
-import {
-  getBiDiPipeDestination,
-  SymbolBiDiPipeDestination,
-  SymbolMessagePortFacility
-} from '../internal.ts';
+import { getBiDiPipeDestination, SymbolBiDiPipeDestination, SymbolMessagePortFacility } from '../internal.ts';
 import { marshal, unmarshal } from '../marshal.ts';
 import { serializedMessageSchema, type SerializedMessage } from '../SerializedMessage.ts';
 import type { MessageHandler, MessagePortFacility } from '../types.js';

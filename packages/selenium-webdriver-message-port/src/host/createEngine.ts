@@ -38,8 +38,7 @@ function createEngine(executeFn: ExecuteFn<(data: string) => void>): {
       void executeFn(
         async (data: string) => {
           // Intentionally break bundler.
-          const messagePortFacility =
-          (
+          const messagePortFacility = (
             await import(['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/'))
           ).getMessagePortFacility();
 
