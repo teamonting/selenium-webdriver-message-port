@@ -1,4 +1,6 @@
 import type { WebDriver } from 'selenium-webdriver';
+import { type ImprovisedGlobalThis, SymbolMessagePortFacility } from '../internal.ts';
+import type { MessagePortFacility } from '../types.ts';
 import createEngine from './createEngine.ts';
 import createSequencer from './createSequencer.ts';
 
@@ -19,16 +21,22 @@ function viaExecuteScript(webDriver: WebDriver): {
   });
 
   const poll = async () => {
-    const entries = await webDriver.executeAsyncScript<readonly string[]>(callback => {
-      (async () => {
-        // Intentionally break bundler because the code is running inside browser, should not be bundled.
-        return (
-          (await import(
-            ['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/')
-          )) as typeof import('../browser/internal.ts')
-        ).flushAll();
-      })().then(callback as (returnValue: readonly string[]) => void);
-    });
+    const entries = await webDriver.executeAsyncScript<readonly string[]>(
+      (symbolDescriptionNameForMessagePortFacility: string, callback: (returnValue: readonly string[]) => void) => {
+        (async () => {
+          const facility: MessagePortFacility | undefined = (globalThis as ImprovisedGlobalThis)[
+            Symbol.for(symbolDescriptionNameForMessagePortFacility) as typeof SymbolMessagePortFacility
+          ];
+
+          if (!facility) {
+            throw new Error('The page does not have harness installed, cannot send message');
+          }
+
+          return facility.flushAll();
+        })().then(callback as (returnValue: readonly string[]) => void);
+      },
+      SymbolMessagePortFacility.description!
+    );
 
     for (const message of entries) {
       processIncomingMessage(message);
