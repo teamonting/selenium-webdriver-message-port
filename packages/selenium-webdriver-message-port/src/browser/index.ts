@@ -98,9 +98,6 @@ Object.defineProperties(globalThis, {
     },
     set(value: NotifyHandler) {
       biDiNotify = value;
-
-      // Flush to pipe when it is being assigned.
-      tryNotify();
     }
   },
   [SymbolMessagePortFacility]: {
@@ -111,9 +108,6 @@ Object.defineProperties(globalThis, {
     }
   }
 });
-
-// Flush to pipe when it was assigned initially before this module is loaded.
-tryNotify();
 
 const messagePort = createMessagePort(ROOT_MESSAGE_PORT);
 
