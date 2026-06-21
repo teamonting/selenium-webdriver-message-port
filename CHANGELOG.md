@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Concealed internals from `globalThis`, in PR [#12](https://github.com/teamonting/selenium-webdriver-message-port/pull/12), by [@compulim](https://github.com/compulim)
-- 💥 Migrated to import map, in PR [#12](https://github.com/teamonting/selenium-webdriver-message-port/pull/12), by [@compulim](https://github.com/compulim)
+- 💥 Renamed CDN entry point for migrating to import map, in PR [#12](https://github.com/teamonting/selenium-webdriver-message-port/pull/12), by [@compulim](https://github.com/compulim)
 
 ## [0.2.0] - 2026-06-13
 

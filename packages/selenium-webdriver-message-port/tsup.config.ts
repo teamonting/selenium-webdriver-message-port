@@ -24,6 +24,7 @@ export default defineConfig([
     },
     format: ['esm'],
     noExternal: ['@ungap/structured-clone', 'uuid', 'valibot', 'workthru'],
+    outDir: './static/',
     target: 'esnext'
   })
 ]);
