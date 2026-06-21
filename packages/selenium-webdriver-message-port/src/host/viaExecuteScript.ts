@@ -1,5 +1,5 @@
 import type { WebDriver } from 'selenium-webdriver';
-import { ImprovisedGlobalThis, SymbolMessagePortFacility } from '../internal.ts';
+import { type ImprovisedGlobalThis, SymbolMessagePortFacility } from '../internal.ts';
 import type { MessagePortFacility } from '../types.ts';
 import createEngine from './createEngine.ts';
 import createSequencer from './createSequencer.ts';
