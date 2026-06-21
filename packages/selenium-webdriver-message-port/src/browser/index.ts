@@ -3,10 +3,10 @@
 import { v7 } from 'uuid';
 import { parse } from 'valibot';
 import { ROOT_MESSAGE_PORT } from '../constant.ts';
-import { SymbolBiDiPipeDestination, SymbolMessagePortFacility, type ImprovisedGlobalThis } from '../internal.ts';
+import { SymbolBiDiNotify, SymbolMessagePortFacility, type ImprovisedGlobalThis } from '../internal.ts';
 import { marshal, unmarshal } from '../marshal.ts';
 import { serializedMessageSchema, type SerializedMessage } from '../SerializedMessage.ts';
-import type { MessageHandler, MessagePortFacility } from '../types.js';
+import type { MessagePortFacility, NotifyHandler } from '../types.js';
 
 const portMap = new Map<string, MessagePort>();
 const queue: string[] = [];
@@ -15,16 +15,8 @@ function flushAll(): readonly string[] {
   return Object.freeze(queue.splice(0));
 }
 
-function tryFlushToPipe() {
-  const pipingMessageHandler = (globalThis as ImprovisedGlobalThis)[SymbolBiDiPipeDestination];
-
-  if (pipingMessageHandler) {
-    let message: string | undefined;
-
-    while (typeof (message = queue.shift()) === 'string') {
-      pipingMessageHandler(message);
-    }
-  }
+function tryNotify() {
+  (globalThis as ImprovisedGlobalThis)[SymbolBiDiNotify]?.();
 }
 
 function createMessagePort(portId: string): MessagePort {
@@ -71,7 +63,7 @@ function registerMessagePort(port: MessagePort, portId: string): void {
     );
 
     // Flush to pipe if there is a destination assigned.
-    tryFlushToPipe();
+    tryNotify();
   });
 
   port.start();
@@ -95,20 +87,17 @@ function sendToBrowser(data: string): void {
 }
 
 const messagePortFacility: MessagePortFacility = { flushAll, sendToBrowser };
-let biDiPipeDestination: MessageHandler | undefined;
+let biDiNotify: NotifyHandler | undefined;
 
 Object.defineProperties(globalThis, {
-  [SymbolBiDiPipeDestination]: {
+  [SymbolBiDiNotify]: {
     configurable: false,
     enumerable: false,
     get() {
-      return biDiPipeDestination;
+      return biDiNotify;
     },
-    set(value: MessageHandler) {
-      biDiPipeDestination = value;
-
-      // Flush to pipe when it is being assigned.
-      tryFlushToPipe();
+    set(value: NotifyHandler) {
+      biDiNotify = value;
     }
   },
   [SymbolMessagePortFacility]: {
@@ -119,9 +108,6 @@ Object.defineProperties(globalThis, {
     }
   }
 });
-
-// Flush to pipe when it was assigned initially before this module is loaded.
-tryFlushToPipe();
 
 const messagePort = createMessagePort(ROOT_MESSAGE_PORT);
 

@@ -1,9 +1,10 @@
 import { ChannelValue, LocalValue } from 'selenium-webdriver/bidi/protocolValue.js';
 import type { ScriptManager } from 'selenium-webdriver/bidi/scriptManager.js';
 import { v7 } from 'uuid';
+import { array, literal, object, parse, string } from 'valibot';
 import { BIDI_CHANNEL_NAME_PREFIX } from '../constant.ts';
-import { type ImprovisedGlobalThis, SymbolBiDiPipeDestination } from '../internal.ts';
-import type { MessageHandler } from '../types.ts';
+import { type ImprovisedGlobalThis, SymbolBiDiNotify, SymbolMessagePortFacility } from '../internal.ts';
+import type { NotifyHandler } from '../types.ts';
 import createEngine from './createEngine.ts';
 
 type BiDiOptions = {
@@ -23,36 +24,66 @@ async function viaBiDi(
   });
 
   try {
+    const poll = async () => {
+      const callResult = await scriptManager.callFunctionInRealm(
+        options.realmId,
+        '' +
+          ((symbolDescriptionForMessagePortFacility: string) => {
+            return (
+              (globalThis as ImprovisedGlobalThis)[
+                Symbol.for(symbolDescriptionForMessagePortFacility) as typeof SymbolMessagePortFacility
+              ]?.flushAll() ?? []
+            );
+          }),
+        true,
+        [LocalValue.createStringValue(SymbolMessagePortFacility.description!)]
+      );
+
+      if (callResult.resultType === 'exception') {
+        throw callResult.exceptionDetails;
+      }
+
+      const schema = object({
+        type: literal('array'),
+        value: array(
+          object({
+            type: literal('string'),
+            value: string()
+          })
+        )
+      });
+
+      for (const { value } of parse(schema, callResult.result).value) {
+        processIncomingMessage(value);
+      }
+    };
+
     await scriptManager.onMessage(event => {
       if (event.channel !== channelName) {
         return;
       }
 
-      if (event.data.type !== 'string') {
-        console.warn('Received message must be of type string, probably version mismatch.');
-
-        return;
-      }
-
-      processIncomingMessage(event.data.value);
+      void poll();
     });
 
     await scriptManager.callFunctionInRealm(
       options.realmId,
       '' +
-        (async (SymbolDescriptionForBiDiPipeDestination: string, sendMessage: MessageHandler) => {
+        (async (SymbolDescriptionForBiDiPipeDestination: string, notify: NotifyHandler) => {
           {
             (globalThis as ImprovisedGlobalThis)[
-              Symbol.for(SymbolDescriptionForBiDiPipeDestination) as typeof SymbolBiDiPipeDestination
-            ] = sendMessage;
+              Symbol.for(SymbolDescriptionForBiDiPipeDestination) as typeof SymbolBiDiNotify
+            ] = notify;
           }
         }),
       true,
       [
-        LocalValue.createStringValue(SymbolBiDiPipeDestination.description!),
+        LocalValue.createStringValue(SymbolBiDiNotify.description!),
         LocalValue.createChannelValue(new ChannelValue(channelName))
       ]
     );
+
+    await poll();
   } catch (error) {
     messagePort.close();
 
