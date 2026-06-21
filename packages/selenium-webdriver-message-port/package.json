@@ -24,18 +24,23 @@
       "default": "./dist/index.js"
     },
     "./browser.js": {
-      "types": "./dist/browser.d.ts",
-      "default": "./dist/browser.js"
+      "types": "./static/browser.d.ts",
+      "default": "./static/browser.js"
     },
     "./host.js": {
       "types": "./dist/host.d.ts",
       "default": "./dist/host.js"
+    },
+    "./internal.js": {
+      "types": "./static/internal.d.ts",
+      "default": "./static/internal.js"
     }
   },
   "files": [
     "./*.js",
     "./CHANGELOG.md",
-    "./dist/"
+    "./dist/",
+    "./static/"
   ],
   "scripts": {
     "build": "tsup",

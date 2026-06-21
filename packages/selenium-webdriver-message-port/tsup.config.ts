@@ -19,10 +19,12 @@ export default defineConfig([
   overrideConfig({
     ...baseConfig,
     entry: {
-      browser: './src/browser/index.ts'
+      browser: './src/browser/index.ts',
+      internal: './src/browser/internal.ts'
     },
     format: ['esm'],
     noExternal: ['@ungap/structured-clone', 'uuid', 'valibot', 'workthru'],
+    outDir: './static/',
     target: 'esnext'
   })
 ]);

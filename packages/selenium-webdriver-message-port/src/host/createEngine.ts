@@ -36,12 +36,13 @@ function createEngine(executeFn: ExecuteFn<(data: string) => void>): {
 
     port.addEventListener('message', ({ data, ports }) => {
       void executeFn(
-        (data: string) => {
-          if (!globalThis.__seleniumWebDriverMessagePortFacility) {
-            throw new Error('The page does not have harness installed, cannot send message');
-          }
-
-          globalThis.__seleniumWebDriverMessagePortFacility.sendToBrowser(data);
+        async (data: string) => {
+          // Intentionally break bundler because the code is running inside browser, should not be bundled.
+          (
+            (await import(
+              ['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/')
+            )) as typeof import('../browser/internal.js')
+          ).sendToBrowser(data);
         },
         [
           JSON.stringify(

@@ -39,8 +39,13 @@ async function viaBiDi(
     await scriptManager.callFunctionInRealm(
       options.realmId,
       '' +
-        ((sendMessage: MessageHandler) => {
-          globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination = sendMessage;
+        (async (sendMessage: MessageHandler) => {
+          // Intentionally break bundler because the code is running inside browser, should not be bundled.
+          (
+            (await import(
+              ['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/')
+            )) as typeof import('../browser/internal.ts')
+          ).setBiDiPipeDestination(sendMessage);
         }),
       true,
       [LocalValue.createChannelValue(new ChannelValue(channelName))]
