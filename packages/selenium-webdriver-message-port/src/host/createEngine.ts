@@ -3,8 +3,10 @@
 import { v7 } from 'uuid';
 import { parse } from 'valibot';
 import { ROOT_MESSAGE_PORT } from '../constant.ts';
+import { SymbolMessagePortFacility, type ImprovisedGlobalThis } from '../internal.ts';
 import { marshal, unmarshal } from '../marshal.ts';
 import { serializedMessageSchema, type SerializedMessage } from '../SerializedMessage.ts';
+import type { MessagePortFacility } from '../types.ts';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ExecuteFn<T extends (...args: readonly any[]) => any> = (fn: T, args: Parameters<T>) => Promise<void>;
@@ -35,32 +37,42 @@ function createEngine(executeFn: ExecuteFn<(data: string) => void>): {
     portMap.set(portId, port);
 
     port.addEventListener('message', ({ data, ports }) => {
+      const serializedData = JSON.stringify(
+        parse(serializedMessageSchema, {
+          data: marshal(data, ports),
+          portId,
+          transferPortIds: ports.map(port => {
+            // Because MessagePort will be neutered on transfer, thus, postMessage() cannot transfer the same MessagePort twice.
+            // We don't need to check if the port already have an ID or not, it must be new.
+            // Otherwise postMessage() would have already fail and should never reach this code block.
+            const id = v7();
+
+            registerMessagePort(port, id);
+
+            return id;
+          })
+        } satisfies SerializedMessage)
+      );
+
       void executeFn(
-        async (data: string) => {
-          // Intentionally break bundler because the code is running inside browser, should not be bundled.
-          (
-            (await import(
-              ['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/')
-            )) as typeof import('../browser/internal.js')
-          ).sendToBrowser(data);
+        async (arg: string) => {
+          const { serializedData, symbolDescriptionForMessagePortFacility } = JSON.parse(arg);
+
+          const facility: MessagePortFacility | undefined = (globalThis as ImprovisedGlobalThis)[
+            Symbol.for(symbolDescriptionForMessagePortFacility) as typeof SymbolMessagePortFacility
+          ];
+
+          if (!facility) {
+            throw new Error('The page does not have harness installed, cannot send message');
+          }
+
+          facility.sendToBrowser(serializedData);
         },
         [
-          JSON.stringify(
-            parse(serializedMessageSchema, {
-              data: marshal(data, ports),
-              portId,
-              transferPortIds: ports.map(port => {
-                // Because MessagePort will be neutered on transfer, thus, postMessage() cannot transfer the same MessagePort twice.
-                // We don't need to check if the port already have an ID or not, it must be new.
-                // Otherwise postMessage() would have already fail and should never reach this code block.
-                const id = v7();
-
-                registerMessagePort(port, id);
-
-                return id;
-              })
-            } satisfies SerializedMessage)
-          )
+          JSON.stringify({
+            serializedData,
+            symbolDescriptionForMessagePortFacility: SymbolMessagePortFacility.description
+          })
         ]
       ).catch(error => console.error(error));
     });

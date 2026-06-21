@@ -2,6 +2,7 @@ import { ChannelValue, LocalValue } from 'selenium-webdriver/bidi/protocolValue.
 import type { ScriptManager } from 'selenium-webdriver/bidi/scriptManager.js';
 import { v7 } from 'uuid';
 import { BIDI_CHANNEL_NAME_PREFIX } from '../constant.ts';
+import { ImprovisedGlobalThis, SymbolBiDiPipeDestination } from '../internal.ts';
 import type { MessageHandler } from '../types.ts';
 import createEngine from './createEngine.ts';
 
@@ -39,16 +40,18 @@ async function viaBiDi(
     await scriptManager.callFunctionInRealm(
       options.realmId,
       '' +
-        (async (sendMessage: MessageHandler) => {
-          // Intentionally break bundler because the code is running inside browser, should not be bundled.
-          (
-            (await import(
-              ['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/')
-            )) as typeof import('../browser/internal.ts')
-          ).setBiDiPipeDestination(sendMessage);
+        (async (SymbolDescriptionForBiDiPipeDestination: string, sendMessage: MessageHandler) => {
+          {
+            (globalThis as ImprovisedGlobalThis)[
+              Symbol.for(SymbolDescriptionForBiDiPipeDestination) as typeof SymbolBiDiPipeDestination
+            ] = sendMessage;
+          }
         }),
       true,
-      [LocalValue.createChannelValue(new ChannelValue(channelName))]
+      [
+        LocalValue.createStringValue(SymbolBiDiPipeDestination.description!),
+        LocalValue.createChannelValue(new ChannelValue(channelName))
+      ]
     );
   } catch (error) {
     messagePort.close();
