@@ -87,7 +87,9 @@ function sendToBrowser(data: string): void {
 }
 
 const messagePortFacility: MessagePortFacility = { flushAll, sendToBrowser };
-let biDiNotify: NotifyHandler | undefined;
+
+// If client code load after the server registered the handler, we must not lose it.
+let biDiNotify: NotifyHandler | undefined = (globalThis as ImprovisedGlobalThis)[SymbolBiDiNotify];
 
 Object.defineProperties(globalThis, {
   [SymbolBiDiNotify]: {
