@@ -1,8 +1,8 @@
-type MessageHandler = (data: string) => void;
+type NotifyHandler = () => void;
 
 interface MessagePortFacility {
   flushAll(): readonly string[];
   sendToBrowser(data: string): void;
 }
 
-export type { MessageHandler, MessagePortFacility };
+export type { MessagePortFacility, NotifyHandler };

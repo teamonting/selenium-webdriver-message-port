@@ -2,9 +2,10 @@ import { ChannelValue, LocalValue } from 'selenium-webdriver/bidi/protocolValue.
 import type { ScriptManager } from 'selenium-webdriver/bidi/scriptManager.js';
 import { v7 } from 'uuid';
 import { BIDI_CHANNEL_NAME_PREFIX } from '../constant.ts';
-import { type ImprovisedGlobalThis, SymbolBiDiPipeDestination } from '../internal.ts';
-import type { MessageHandler } from '../types.ts';
+import { type ImprovisedGlobalThis, SymbolBiDiNotify, SymbolMessagePortFacility } from '../internal.ts';
+import type { NotifyHandler } from '../types.ts';
 import createEngine from './createEngine.ts';
+import { array, literal, object, parse, string } from 'valibot';
 
 type BiDiOptions = {
   realmId: string;
@@ -23,6 +24,40 @@ async function viaBiDi(
   });
 
   try {
+    const poll = async () => {
+      console.log('POLL');
+
+      const result = await scriptManager.callFunctionInRealm(
+        options.realmId,
+        '' +
+          ((symbolDescriptionForMessagePortFacility: string) => {
+            return (
+              (globalThis as ImprovisedGlobalThis)[
+                Symbol.for(symbolDescriptionForMessagePortFacility) as typeof SymbolMessagePortFacility
+              ]?.flushAll() ?? []
+            );
+          }),
+        true,
+        [LocalValue.createStringValue(SymbolMessagePortFacility.description!)]
+      );
+
+      console.log(result);
+
+      const schema = object({
+        type: literal('array'),
+        value: array(
+          object({
+            type: literal('string'),
+            value: string()
+          })
+        )
+      });
+
+      for (const { value } of parse(schema, result).value) {
+        processIncomingMessage(value);
+      }
+    };
+
     await scriptManager.onMessage(event => {
       if (event.channel !== channelName) {
         return;
@@ -34,22 +69,22 @@ async function viaBiDi(
         return;
       }
 
-      processIncomingMessage(event.data.value);
+      poll();
     });
 
     await scriptManager.callFunctionInRealm(
       options.realmId,
       '' +
-        (async (SymbolDescriptionForBiDiPipeDestination: string, sendMessage: MessageHandler) => {
+        (async (SymbolDescriptionForBiDiPipeDestination: string, notify: NotifyHandler) => {
           {
             (globalThis as ImprovisedGlobalThis)[
-              Symbol.for(SymbolDescriptionForBiDiPipeDestination) as typeof SymbolBiDiPipeDestination
-            ] = sendMessage;
+              Symbol.for(SymbolDescriptionForBiDiPipeDestination) as typeof SymbolBiDiNotify
+            ] = notify;
           }
         }),
       true,
       [
-        LocalValue.createStringValue(SymbolBiDiPipeDestination.description!),
+        LocalValue.createStringValue(SymbolBiDiNotify.description!),
         LocalValue.createChannelValue(new ChannelValue(channelName))
       ]
     );
