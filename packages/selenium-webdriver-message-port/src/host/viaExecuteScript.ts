@@ -1,4 +1,5 @@
 import type { WebDriver } from 'selenium-webdriver';
+import { getMessagePortFacility } from '../internal.ts';
 import createEngine from './createEngine.ts';
 import createSequencer from './createSequencer.ts';
 
@@ -20,11 +21,13 @@ function viaExecuteScript(webDriver: WebDriver): {
 
   const poll = async () => {
     const entries = await webDriver.executeScript<readonly string[]>(() => {
-      if (!globalThis.__seleniumWebDriverMessagePortFacility) {
+      const messagePortFacility = getMessagePortFacility();
+
+      if (!messagePortFacility) {
         throw new Error('The page does not have harness installed');
       }
 
-      return globalThis.__seleniumWebDriverMessagePortFacility.flushAll();
+      return messagePortFacility.flushAll();
     });
 
     for (const message of entries) {

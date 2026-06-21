@@ -3,8 +3,13 @@
 import { v7 } from 'uuid';
 import { parse } from 'valibot';
 import { ROOT_MESSAGE_PORT } from '../constant.ts';
+import {
+  getBiDiPipeDestination,
+  SymbolBiDiPipeDestination,
+  SymbolMessagePortFacility
+} from '../internal.ts';
 import { marshal, unmarshal } from '../marshal.ts';
-import { type SerializedMessage, serializedMessageSchema } from '../SerializedMessage.ts';
+import { serializedMessageSchema, type SerializedMessage } from '../SerializedMessage.ts';
 import type { MessageHandler, MessagePortFacility } from '../types.js';
 
 const portMap = new Map<string, MessagePort>();
@@ -15,7 +20,7 @@ function flushAll(): readonly string[] {
 }
 
 function tryFlushToPipe() {
-  const pipingMessageHandler: MessageHandler | undefined = globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination;
+  const pipingMessageHandler = getBiDiPipeDestination();
 
   if (pipingMessageHandler) {
     let message: string | undefined;
@@ -93,24 +98,29 @@ function sendToBrowser(data: string): void {
   port.postMessage(unmarshal(payload, transfer), transfer);
 }
 
-globalThis.__seleniumWebDriverMessagePortFacility = Object.freeze({
-  flushAll,
-  sendToBrowser
-} satisfies MessagePortFacility);
+let pipeDestination = getBiDiPipeDestination();
 
-let pipeDestination: MessageHandler | undefined = globalThis.__seleniumWebDriverMessagePortBiDiPipeDestination;
+Object.defineProperties(globalThis, {
+  [SymbolBiDiPipeDestination]: {
+    configurable: false,
+    enumerable: false,
+    get() {
+      return pipeDestination;
+    },
+    set(value: MessageHandler | undefined) {
+      pipeDestination = value;
 
-Object.defineProperty(globalThis, '__seleniumWebDriverMessagePortBiDiPipeDestination', {
-  configurable: false,
-  enumerable: true,
-  get() {
-    return pipeDestination;
+      // Flush to pipe when it is being assigned.
+      tryFlushToPipe();
+    }
   },
-  set(value: MessageHandler | undefined) {
-    pipeDestination = value;
-
-    // Flush to pipe when it is being assigned.
-    tryFlushToPipe();
+  [SymbolMessagePortFacility]: {
+    configurable: false,
+    enumerable: false,
+    value: Object.freeze({
+      flushAll,
+      sendToBrowser
+    } satisfies MessagePortFacility)
   }
 });
 

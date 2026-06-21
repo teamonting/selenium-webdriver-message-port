@@ -3,6 +3,7 @@
 import { v7 } from 'uuid';
 import { parse } from 'valibot';
 import { ROOT_MESSAGE_PORT } from '../constant.ts';
+import { getMessagePortFacility } from '../internal.ts';
 import { marshal, unmarshal } from '../marshal.ts';
 import { serializedMessageSchema, type SerializedMessage } from '../SerializedMessage.ts';
 
@@ -37,11 +38,13 @@ function createEngine(executeFn: ExecuteFn<(data: string) => void>): {
     port.addEventListener('message', ({ data, ports }) => {
       void executeFn(
         (data: string) => {
-          if (!globalThis.__seleniumWebDriverMessagePortFacility) {
+          const messagePortFacility = getMessagePortFacility();
+
+          if (!messagePortFacility) {
             throw new Error('The page does not have harness installed, cannot send message');
           }
 
-          globalThis.__seleniumWebDriverMessagePortFacility.sendToBrowser(data);
+          messagePortFacility.sendToBrowser(data);
         },
         [
           JSON.stringify(
