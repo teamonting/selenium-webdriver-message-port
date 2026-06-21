@@ -20,7 +20,7 @@ export default defineConfig([
     ...baseConfig,
     entry: {
       browser: './src/browser/index.ts',
-      internal: './src/internal.ts'
+      internal: './src/browser/internal.ts'
     },
     format: ['esm'],
     noExternal: ['@ungap/structured-clone', 'uuid', 'valibot', 'workthru'],
