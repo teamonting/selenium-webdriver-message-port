@@ -2,8 +2,16 @@
 <html lang="en">
   <head></head>
   <body>
+    <script type="importmap">
+      {
+        "imports": {
+          "@onting/selenium-webdriver-message-port": "/static/js/browser.js",
+          "@onting/selenium-webdriver-message-port/": "/static/js/"
+        }
+      }
+    </script>
     <script type="module">
-      import { messagePort } from '/static/js/browser.js';
+      import { messagePort } from '@onting/selenium-webdriver-message-port';
 
       messagePort.addEventListener(
         'message',

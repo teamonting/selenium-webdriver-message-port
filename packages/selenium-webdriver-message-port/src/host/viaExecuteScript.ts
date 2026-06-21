@@ -1,5 +1,4 @@
 import type { WebDriver } from 'selenium-webdriver';
-import { getMessagePortFacility } from '../internal.ts';
 import createEngine from './createEngine.ts';
 import createSequencer from './createSequencer.ts';
 
@@ -20,14 +19,19 @@ function viaExecuteScript(webDriver: WebDriver): {
   });
 
   const poll = async () => {
-    const entries = await webDriver.executeScript<readonly string[]>(() => {
-      const messagePortFacility = getMessagePortFacility();
+    const entries = await webDriver.executeAsyncScript<readonly string[]>(callback => {
+      (async () => {
+        // Intentionally break bundler.
+        const messagePortFacility = (
+          await import(['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/'))
+        ).getMessagePortFacility();
 
-      if (!messagePortFacility) {
-        throw new Error('The page does not have harness installed');
-      }
+        if (!messagePortFacility) {
+          throw new Error('The page does not have harness installed');
+        }
 
-      return messagePortFacility.flushAll();
+        return messagePortFacility.flushAll();
+      })().then(callback as (returnValue: readonly string[]) => void);
     });
 
     for (const message of entries) {

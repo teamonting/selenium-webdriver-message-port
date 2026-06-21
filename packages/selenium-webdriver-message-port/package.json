@@ -30,6 +30,10 @@
     "./host.js": {
       "types": "./dist/host.d.ts",
       "default": "./dist/host.js"
+    },
+    "./internal.js": {
+      "types": "./dist/internal.d.ts",
+      "default": "./dist/internal.js"
     }
   },
   "files": [

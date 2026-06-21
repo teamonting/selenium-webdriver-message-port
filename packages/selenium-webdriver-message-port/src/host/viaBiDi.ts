@@ -2,7 +2,6 @@ import { ChannelValue, LocalValue } from 'selenium-webdriver/bidi/protocolValue.
 import type { ScriptManager } from 'selenium-webdriver/bidi/scriptManager.js';
 import { v7 } from 'uuid';
 import { BIDI_CHANNEL_NAME_PREFIX } from '../constant.ts';
-import { setBiDiPipeDestination } from '../internal.ts';
 import type { MessageHandler } from '../types.ts';
 import createEngine from './createEngine.ts';
 
@@ -39,7 +38,13 @@ async function viaBiDi(
 
     await scriptManager.callFunctionInRealm(
       options.realmId,
-      '' + ((sendMessage: MessageHandler) => setBiDiPipeDestination(sendMessage)),
+      '' +
+        (async (sendMessage: MessageHandler) => {
+          // Intentionally break bundler.
+          (
+            await import(['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/'))
+          ).setBiDiPipeDestination(sendMessage);
+        }),
       true,
       [LocalValue.createChannelValue(new ChannelValue(channelName))]
     );
