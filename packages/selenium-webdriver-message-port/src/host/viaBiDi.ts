@@ -63,12 +63,6 @@ async function viaBiDi(
         return;
       }
 
-      if (event.data.type !== 'string') {
-        console.warn('Received message must be of type string, probably version mismatch.');
-
-        return;
-      }
-
       void poll();
     });
 
