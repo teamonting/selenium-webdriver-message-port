@@ -37,16 +37,12 @@ function createEngine(executeFn: ExecuteFn<(data: string) => void>): {
     port.addEventListener('message', ({ data, ports }) => {
       void executeFn(
         async (data: string) => {
-          // Intentionally break bundler.
-          const messagePortFacility = (
-            await import(['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/'))
-          ).getMessagePortFacility();
-
-          if (!messagePortFacility) {
-            throw new Error('The page does not have harness installed, cannot send message');
-          }
-
-          messagePortFacility.sendToBrowser(data);
+          // Intentionally break bundler because the code is running inside browser, should not be bundled.
+          (
+            (await import(
+              ['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/')
+            )) as typeof import('../browser/internal.js')
+          ).sendToBrowser(data);
         },
         [
           JSON.stringify(

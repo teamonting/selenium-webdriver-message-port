@@ -21,16 +21,12 @@ function viaExecuteScript(webDriver: WebDriver): {
   const poll = async () => {
     const entries = await webDriver.executeAsyncScript<readonly string[]>(callback => {
       (async () => {
-        // Intentionally break bundler.
-        const messagePortFacility = (
-          await import(['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/'))
-        ).getMessagePortFacility();
-
-        if (!messagePortFacility) {
-          throw new Error('The page does not have harness installed');
-        }
-
-        return messagePortFacility.flushAll();
+        // Intentionally break bundler because the code is running inside browser, should not be bundled.
+        return (
+          (await import(
+            ['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/')
+          )) as typeof import('../browser/internal.ts')
+        ).flushAll();
       })().then(callback as (returnValue: readonly string[]) => void);
     });
 

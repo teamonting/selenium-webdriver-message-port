@@ -13,8 +13,16 @@ This enables libraries that use `MessagePort` to function across the host and th
 In the HTML page:
 
 ```html
-<script>
-  import { messagePort } from 'https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port/dist/browser.js';
+<script type="importmap">
+  {
+    "imports": {
+      "@onting/selenium-webdriver-message-port": "https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port/static/browser.js",
+      "@onting/selenium-webdriver-message-port/": "https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port/static/"
+    }
+  }
+</script>
+<script type="module">
+  import { messagePort } from '@onting/selenium-webdriver-message-port';
 
   messagePort.addEventListener('message', ({ data }) => {
     // Will print "Hello from host!"
@@ -87,8 +95,16 @@ function viaExecuteScript(webDriver: WebDriver): {
 <summary>Expand to see the sample code</summary>
 
 ```html
-<script>
-  import { messagePort } from 'https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port/dist/browser.js';
+<script type="importmap">
+  {
+    "imports": {
+      "@onting/selenium-webdriver-message-port": "https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port/static/browser.js",
+      "@onting/selenium-webdriver-message-port/": "https://cdn.jsdelivr.net/npm/@onting/selenium-webdriver-message-port/static/"
+    }
+  }
+</script>
+<script type="module">
+  import { messagePort } from '@onting/selenium-webdriver-message-port';
   import { messagePortRPC } from 'https://esm.sh/message-port-rpc';
 
   messagePortRPC(messagePort, message => console.log(message));

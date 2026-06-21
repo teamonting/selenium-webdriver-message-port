@@ -40,10 +40,10 @@ async function viaBiDi(
       options.realmId,
       '' +
         (async (sendMessage: MessageHandler) => {
-          // Intentionally break bundler.
-          (
+          // Intentionally break bundler because the code is running inside browser, should not be bundled.
+          ((
             await import(['@onting', 'selenium-webdriver-message-port', 'internal.js'].join('/'))
-          ).setBiDiPipeDestination(sendMessage);
+          ) as typeof import('../browser/internal.ts')).setBiDiPipeDestination(sendMessage);
         }),
       true,
       [LocalValue.createChannelValue(new ChannelValue(channelName))]
