@@ -69,10 +69,10 @@ async function viaBiDi(
     await scriptManager.callFunctionInRealm(
       options.realmId,
       '' +
-        (async (SymbolDescriptionForBiDiPipeDestination: string, notify: NotifyHandler) => {
+        (async (SymbolDescriptionForBiDiNotify: string, notify: NotifyHandler) => {
           {
             (globalThis as ImprovisedGlobalThis)[
-              Symbol.for(SymbolDescriptionForBiDiPipeDestination) as typeof SymbolBiDiNotify
+              Symbol.for(SymbolDescriptionForBiDiNotify) as typeof SymbolBiDiNotify
             ] = notify;
           }
         }),

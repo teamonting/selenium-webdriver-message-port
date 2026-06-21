@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Concealed internals using `globalThis[Symbol.for(*)]` instead of `import()`, in PR [#13](https://github.com/teamonting/selenium-webdriver-message-port/pull/13), by [@compulim](https://github.com/compulim)
 - BiDi: use notify than push for better transport reliability, in PR [#14](https://github.com/teamonting/selenium-webdriver-message-port/pull/14), by [@compulim](https://github.com/compulim)
 
+### Fixed
+
+- BiDi: client should not overwrite host notify handler due to race condition, in PR [#15](https://github.com/teamonting/selenium-webdriver-message-port/pull/15), by [@compulim](https://github.com/compulim)
+
 ## [0.2.0] - 2026-06-13
 
 ### Added
