@@ -1,11 +1,11 @@
 import { ChannelValue, LocalValue } from 'selenium-webdriver/bidi/protocolValue.js';
 import type { ScriptManager } from 'selenium-webdriver/bidi/scriptManager.js';
 import { v7 } from 'uuid';
+import { array, literal, object, parse, string } from 'valibot';
 import { BIDI_CHANNEL_NAME_PREFIX } from '../constant.ts';
 import { type ImprovisedGlobalThis, SymbolBiDiNotify, SymbolMessagePortFacility } from '../internal.ts';
 import type { NotifyHandler } from '../types.ts';
 import createEngine from './createEngine.ts';
-import { array, literal, object, parse, string } from 'valibot';
 
 type BiDiOptions = {
   realmId: string;
@@ -25,9 +25,7 @@ async function viaBiDi(
 
   try {
     const poll = async () => {
-      console.log('POLL');
-
-      const result = await scriptManager.callFunctionInRealm(
+      const callResult = await scriptManager.callFunctionInRealm(
         options.realmId,
         '' +
           ((symbolDescriptionForMessagePortFacility: string) => {
@@ -41,7 +39,9 @@ async function viaBiDi(
         [LocalValue.createStringValue(SymbolMessagePortFacility.description!)]
       );
 
-      console.log(result);
+      if (callResult.resultType === 'exception') {
+        throw callResult.exceptionDetails;
+      }
 
       const schema = object({
         type: literal('array'),
@@ -53,7 +53,7 @@ async function viaBiDi(
         )
       });
 
-      for (const { value } of parse(schema, result).value) {
+      for (const { value } of parse(schema, callResult.result).value) {
         processIncomingMessage(value);
       }
     };
@@ -69,7 +69,7 @@ async function viaBiDi(
         return;
       }
 
-      poll();
+      void poll();
     });
 
     await scriptManager.callFunctionInRealm(
@@ -88,6 +88,8 @@ async function viaBiDi(
         LocalValue.createChannelValue(new ChannelValue(channelName))
       ]
     );
+
+    await poll();
   } catch (error) {
     messagePort.close();
 
