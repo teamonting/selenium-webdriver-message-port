@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - BiDi: client should not overwrite host notify handler due to race condition, in PR [#15](https://github.com/teamonting/selenium-webdriver-message-port/pull/15), by [@compulim](https://github.com/compulim)
-- BiDi: handle error graceful if frame is closed too quickly, in PR [#XXX](https://github.com/teamonting/selenium-webdriver-message-port/pull/XXX), by [@compulim](https://github.com/compulim)
+- BiDi: handle error graceful if frame is closed too quickly, in PR [#16](https://github.com/teamonting/selenium-webdriver-message-port/pull/16), by [@compulim](https://github.com/compulim)
 
 ## [0.2.0] - 2026-06-13
 
