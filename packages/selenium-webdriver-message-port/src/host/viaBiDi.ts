@@ -59,7 +59,7 @@ async function viaBiDi(
     };
 
     await scriptManager.onMessage(event => {
-      if (event.channel !== channelName) {
+      if (!event || !('channel' in event) || event.channel !== channelName) {
         return;
       }
 
